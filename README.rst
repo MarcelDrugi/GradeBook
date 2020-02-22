@@ -1,6 +1,6 @@
 Dziennik Ocen
 =============
-| |Gradebook works with 4 user types.|
+| Gradebook works with 4 user types.
 1) Manager (e. g. school head)
 2) Student
 3) Parent
@@ -31,5 +31,6 @@ The student / parent account allows:
 - download the current timetable,
 - exchange messages with subject teachers and the manager.
 | 
-| |Example use of the application:|
+Example use of the application:
+~~~~~~~~~~~~~~~~~~
 | http://gradebook.pythonanywhere.com/yourgrades
