@@ -1,4 +1,4 @@
-Dziennik Ocen
+Gradebook
 =============
 | Gradebook works with 4 user types.
 1) Manager (e. g. school head)
