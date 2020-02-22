@@ -1,0 +1,104 @@
+<head>
+  {% load static %}
+  <link rel="stylesheet" href="{% static 'yourgrades/style.css' %}">
+  <link rel="stylesheet" href="{% static 'yourgrades/css/bootstrap.min.css' %}">
+  <script src="{% static 'yourgrades/jquery-3.4.1.js' %}"></script>
+  <script src="{% static 'yourgrades/popper.min.js' %}"></script>
+  <script src="{% static 'yourgrades/js/bootstrap.min.js' %}"></script>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+  <link rel="icon" href="data:,">
+
+  <title> Dziennik online </title>
+</head>
+<body>
+  <div class="container">
+    {% if user_taken is True %}
+      <div class="alert alert-warning">
+        <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+        <strong> Nazwa użytkownika zajęta. Proszę wybrać inną.</strong>
+      </div>
+    {% endif %}
+    {% if pass_no_confirm is True %}
+      <div class="alert alert-warning">
+        <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+        <strong> Podane hasła się różnią. Proszę poprawić. </strong>
+      </div>
+    {% endif %}
+    <div class="row h-100">
+      <div class="col-sm-12 my-auto">
+        <div class="row ">
+          <div class="col-8 offset-2 hello" style="font-size:18px;">
+            <p><b>Witaj</b>, to Twoje pierwsze logowanie.</p>
+            <p>
+              Aby rozpocząć korzystanie z dziennika należy zmienić swoje tymczasowe hasło.<br>
+              Możeśż również zmienić swoją nazwę użytkownika wykorzysytywaną podczas logowanie (opcjonalne).<br>
+            </p>
+            <p>
+              <div class="row">
+                <div class="col-1 offset-2">
+                  <i class="material-icons align-text-bottom" style="font-size:35px;">contacts</i>
+                </div>
+                <div class="col-8">
+                  <b>Proszę wybrać login oraz wpisać nowe hasło:</b>
+                </div>
+              </div>
+            </p>
+          </div>
+        </div>
+        <br><br>
+        <div class="row">
+          <div class="col-8 offset-1">
+            <form action="{% url 'yourgrades:first_login' %}" method="POST">
+              {% csrf_token %}
+              <div class="row">
+                <div class="col-sm-6 offset-3 form-group form-inline">
+                  <div class="col-sm-6 text-right">
+                    <b>{{form.username.label}}</b>
+                  </div>
+                  <div class="col-sm-5">
+                    {{form.username}}
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-sm-6 offset-3 form-group form-inline">
+                  <div class="col-sm-6 text-right">
+                    <b>{{form.password.label}}</b>
+                  </div>
+                  <div class="col-sm-5">
+                    {{form.password}}
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-sm-6 offset-3 form-group form-inline">
+                  <div class="col-sm-6 text-right">
+                    <b>{{form.password_confirm.label}}</b>
+                  </div>
+                  <div class="col-sm-5">
+                    {{form.password_confirm}}
+                  </div>
+                </div>
+              </div>
+              <br>
+              <div class="row">
+                <div class="col-sm-4 offset-6">
+                  <button type="submit" class="btn btn-outline-secondary text-center login2"><b>ZAPISZ NOWE DANE</b></button>
+                </div>
+              </div>
+            </form>
+            <br>
+            <div class="row">
+              <div class="col-8 offset-6">
+                  <a class="btn btn-secondary logout2" href="{% url 'yourgrades:logout' %}" style="font-size:16px;"> <b>ANULUJ I WYLOGUJ</b> </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>

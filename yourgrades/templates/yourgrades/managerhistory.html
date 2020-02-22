@@ -1,0 +1,91 @@
+{% extends 'yourgrades/base.html' %}
+
+{% block grades %}
+  <body>
+    <div class="container">
+      <div class="row">
+        <div class="col-sm-12">
+          <div class="row">
+            <div class="col-4 offset-2 center-block">
+              <br>
+              <div class="row ">
+                <table class="table table-responsive table-striped">
+                  <thead class="thead-dark">
+                    <tr>
+                      <th scope="col"  >OCENY DODANE PRZEZ MANAGERÓW</th>
+                    </tr>
+                  </thead>
+                  {% for grade in grades %}
+                    <tr>
+                      <th scope="row">
+                        {{grade.date}} {{grade.subject.unique_code}} {{grade.grade}} / {{grade.weight}} <br>
+                      </th>
+                    </tr>
+                  {% endfor%}
+                </table>
+                <br>
+              </div>
+              <div class="pagination">
+                <span class="step-links">
+                  {% if grades.has_previous %}
+                    <a href="?page1=1" style="color: black !important;"><b>&laquo; pierwsza</b></a>
+                    <a href="?page1={{ grades.previous_page_number }}" style="color: black !important;"><b>poprzednia</b></a>
+                  {% endif %}
+                  <span class="current">
+                    <u>strona {{ grades.number }} z {{ grades.paginator.num_pages }}</u>.
+                  </span>
+                  {% if grades.has_next %}
+                    <a href="?page1={{ grades.next_page_number }}" style="color: black !important;"><b>następna</b></a>
+                    <a href="?page1={{ grades.paginator.num_pages }}" style="color: black !important;"><b>ostatnia</b> &raquo;</a>
+                  {% endif %}
+                </span>
+              </div>
+            </div>
+            <br>
+            &nbsp;&nbsp;&nbsp;&nbsp;
+            <div class="col-4 ">
+              <br>
+              <div class="row">
+                <table class="table table-responsive table-striped">
+                  <thead class="thead-dark">
+                    <tr>
+                      <th scope="col" >OCENY USUNIĘTE PRZEZ MANAGERÓW</th>
+                    </tr>
+                  </thead>
+                  {% for grade in canceled_grades %}
+                  <tr>
+                    <th scope="row">
+                      {{grade.date}} {{grade.subject.unique_code}} {{grade.grade}} / {{grade.weight}} <br>
+                    </th>
+                  </tr>
+                {% endfor%}
+                </table>
+              </div>
+              <div class="pagination">
+                <span class="step-links">
+                  {% if canceled_grades.has_previous %}
+                  <a href="?page2=1" style="color: black !important;"><b>&laquo; pierwsza</b></a>
+                  <a href="?page2={{ canceled_grades.previous_page_number }}" style="color: black !important;"><b>poprzednia</b></a>
+                  {% endif %}
+                  <span class="current">
+                    <u>strona {{ canceled_grades.number }} z {{ canceled_grades.paginator.num_pages }}.</u>
+                  </span>
+                  {% if canceled_grades.has_next %}
+                    <a href="?page2={{ canceled_grades.next_page_number }}" style="color: black !important;"><b>następna</b></a>
+                    <a href="?page2={{ canceled_grades.paginator.num_pages }}" style="color: black !important;"><b>ostatnia</b> &raquo;</a>
+                  {% endif %}
+                </span>
+              </div>
+            </div>
+          </div>
+          <br><br>
+          <div class="row">
+            <div class="col-4 offset-4">
+              <a class="btn btn-outline-dark" href="{%url 'yourgrades:manager' %}">POWRÓT DO PANELU MANAGERA</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+{% endblock %}

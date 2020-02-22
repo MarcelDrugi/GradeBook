@@ -1,0 +1,111 @@
+<head>
+  {% load static %}
+  <link rel="stylesheet" href="{% static 'yourgrades/style.css' %}">
+  <link rel="stylesheet" href="{% static 'yourgrades/css/bootstrap.min.css' %}">
+  <script src="{% static 'yourgrades/jquery-3.4.1.js' %}"></script>
+  <script src="{% static 'yourgrades/popper.min.js' %}"></script>
+  <script src="{% static 'yourgrades/js/bootstrap.min.js' %}"></script>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+  <link rel="icon" href="data:,">
+
+  <title> Dziennik online </title>
+</head>
+<body>
+  <div class="container">
+    <div class="row h-100">
+      <div class="col-sm-12 login my-auto">
+        {% if wrong_password is not None %}
+          <div class="alert alert-warning">
+            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+            <strong> Podano błędne hasło!</strong>
+          </div>
+        {% endif %}
+        {% if user_no_exist is not None %}
+          <div class="alert alert-warning">
+            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+            <strong> Użytkownik o takimm nicku nie istnieje</strong>
+          </div>
+        {% endif %}
+        <div class="row" style="padding-bottom: 4%;">
+          <div class="col" style="text-align: center !important;">
+              <img src="{% static 'yourgrades/img/book.png' %}" class="rounded" width="315" height="175">
+            </div>
+        </div>
+        <form id={{student.0.user.id}} action="{% url 'yourgrades:homepage' %}" method="POST">
+          {% csrf_token %}
+          <div class="row">
+            <div class="col-sm-4 offset-4 form-group form-inline">
+               <div class="col-3">
+                <b style="font-size:20px;">{{form.username.label}}</b>
+               </div>
+               <div class="col-9">
+                {{form.username}}
+               </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-sm-4 offset-4 form-group form-inline">
+              <div class="col-3">
+                <b style="font-size:20px;">{{form.password.label}}</b>
+              </div>
+              <div class="col-9">
+                {{form.password}}
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-sm-2 offset-5" style="text-align: center !important;">
+              <br>
+              <button type="submit" class="btn btn-outline-secondary text-center"><b>ZALOGUJ MNIE</b></button>
+            </div>
+          </div>
+          <br><br><br><br>
+          <div class="col" style="text-align: center !important;">
+            <button type="button" class="btn btn-outline-dark" data-toggle="modal" data-target="#getinfo"><b style="font-size: 12px;">i</b></button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  <div class="modal " id="getinfo" role="dialog">
+    <div class="modal-dialog modal-lg">
+      <div class="alert alert-secondary alert-dismissible">
+        <a  class="close" data-dismiss="modal" aria-label="close">&times;</a>
+          <b>Witaj!</b><br>
+          Do dziennika można zalogować się na 4 poziomach użytkownika (w nawiasach działające konta):<br><br>
+        <b>1.</b> Manager (<u>login:</u> dyrektor, <u>hasło:</u> dyrektor)<br>
+        <b>2.</b> Nauczyciel (<u>login:</u> nauczyciel, <u>hasło:</u> nauczyciel)<br>
+        <b>3.</b> Uczeń (<u>login:</u> uczeń, <u>hasło:</u> uczeń)<br>
+        <b>4.</b> Rodzic (<u>login:</u> rodzic, <u>hasło:</u> rodzic)<br>
+        <br>
+
+        <b>Ad 1.</b> Konto managera posiada najwięcej funkcjonalności, pozwala:<br>
+        - tworzyć klasy, konta uczniów, rodziców i nauczycieli,<br>
+        - aktywować/dezaktywować/usuwać klasy/nauczycieli,<br>
+        - tworzyć przedmioty dla poszczególnych klas, podłączać do nich wybranych nauczycieli,<br>
+        - wyznaczać terminy lekcji z poszczególnych przedmiotów,<br>
+        - wysyłać wiadomości do poszczególnych uczniów/nauczycieli/rodziców oraz do całych klas,<br>
+        - edytować dane personalne użytkowników i resetować dane logowania,<br>
+        - przeglądać historię wystawiania ocen przez nauczycieli,<br>
+        - wprowadzać/usuwać oceny w trybie administracyjnym.<br>
+        <hr>
+
+        <b>Ad 2.</b> Konto nauczyciela pozwala:<br>
+        - wprowadzać oceny z nauczanych przedmiotów,<br>
+        - wysyłać wiadomości do uczniów/rodziców lub całych klas oraz do managera<br>
+        - pobrać swój terminarz zajęć,<br>
+        - przejrzeć historię wprowadzonych przez siebie ocen oraz ingerencji managerów.<br>
+        <hr>
+
+        <b>Ad 3, 4.</b> Konto ucznia/rodzica pozwala:<br>
+        - przeglądać otrzymane oceny,<br>
+        - pobrać aktualny plan zajęć,<br>
+        - wymieniać wiadomości z nauczycielami przedmiotów i managerem.<br>
+        <br>
+      </div>
+    </div>
+  </div>
+</body>

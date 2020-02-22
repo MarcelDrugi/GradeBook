@@ -1,0 +1,233 @@
+{% extends 'yourgrades/base.html' %}
+<head>
+  {% load yourgradestags %}
+</head>
+{% block grades%}
+  <body>
+    <div class="container">
+      <div class="row">
+        <div class="col-sm-12">
+          {% if exist is True %}
+            <div class="alert alert-warning">
+              <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+              <strong> Ten termin został już wprowadzony wcześniej! Wskaż inny termin.</strong>
+            </div>
+          {% endif %}
+            <div class="row">
+              <div class="col-12 ext-center">
+                <br>
+              </div>
+            </div>
+            <br><br>
+            <div class="row">
+              <div class="col-6">
+                <div class="row">
+                  <h3><b>{{subject.name}}</b> w klasie: <b>{{class.name}}</b>&nbsp;&nbsp;<a class="btn btn-outline-dark"  onclick="return confirm('Jesteś pewien, że chcesz usunąć ten przedmiot?')" href="{% url 'yourgrades:del_subject' class.unique_code subject.unique_code %}"> <b>USUŃ PRZEDZMIOT</b> </a></h3>
+                </div>
+                <br>
+                <div class="row">
+                  <h4>Nauczyciele:</h4>
+                </div>
+                <br>
+                {% if not teachers%}
+                  <b style="font-size:18px;"> ten przedmiot nie ma wybranych nauczycieli</b>
+                {% else %}
+                  {% for teacher in teachers %}
+                    <div class="row">
+                      <b style="font-size:20px;">{{teacher}}</b>
+                      <a class="btn btn-link" onclick="return confirm('Jesteś pewien, że chcesz skreślić tego nauczyciela?')" data-toggle="tooltip" title="Wykreśl z listy nauczycieli tego przedmiotu" href="{% url 'yourgrades:del_subject_teacher' class.unique_code subject.unique_code teacher.user.id %}">
+                        <i class="material-icons align-text-bottom" style="font-size:24px; color: grey"> <b> clear</b> </i>
+                      </a>
+                    </div>
+                    <hr>
+                  {% endfor %}
+                {% endif %}
+                <div class="row">
+                  <a class="btn btn-outline-dark" href="{% url 'yourgrades:add_subject_teacher' class.unique_code subject.unique_code %}"><b> DODAJ NAUCZYCIELA TEGO PRZEDMIOTU</b></a>
+                </div>
+                <br><br><br>
+                <div class="row">
+                  <div class="col-11">
+                  <div class="row">
+                    <table class="table table-responsive">
+                      <thead class="thead-dark">
+                        <tr>
+                          <th scope="col" style="width: 10.0%" >OCENY Z PRZEDMIOTU DODANE PRZEZ NAUCZYCIELI <br> (nie uwzględnia modyfikacji managera):</th>
+                        </tr>
+                      </thead>
+                      {% for grade in grades %}
+                      <tr>
+                        <th scope="row">
+                          {{grade.date}} {{grade.subject.unique_code}} {{grade.student}} {{grade.student.school_class.unique_code}} {{grade.grade}} / {{grade.weight}} <br>
+                        </th>
+                      </tr>
+                      {% endfor%}
+                    </table>
+                  </div>
+                    <div class="pagination">
+                      <span class="step-links">
+                        {% if grades.has_previous %}
+                          <a href="?page1=1" style="color:black; font-weight: bold;">&laquo; pierwsza</a>
+                          <a href="?page1={{ grades.previous_page_number }}" style="color:black;">poprzednia</a>
+                        {% endif %}
+                        <span class="current" style="color:black; font-weight: bold;">
+                          strona {{ grades.number }} z {{ grades.paginator.num_pages }}.
+                        </span>
+                        {% if grades.has_next %}
+                          <a href="?page1={{ grades.next_page_number }}" style="color:black font-weight: bold;;">następna</a>
+                          <a href="?page1={{ grades.paginator.num_pages }}" style="color:black font-weight: bold;;">ostatnia &raquo;</a>
+                        {% endif %}
+                      </span>
+                    </div>
+                  </div>
+                    <br><br>
+                  <div class="col-11">
+                    <br>
+                  <div class="row">
+                    <table class="table table-responsive">
+                      <thead class="thead-dark">
+                        <tr>
+                          <th scope="col" style="width: 10.0%" >OCENY Z PRZEDMIOTU DODANE PRZEZ MANAGERÓW:</th>
+                        </tr>
+                      </thead>
+                      {% for grade in manager_grades %}
+                      <tr>
+                        <th scope="row">
+                          {{grade.date}} {{grade.subject.unique_code}} {{grade.student}} {{grade.student.school_class.unique_code}} {{grade.grade}} / {{grade.weight}} <br>
+                        </th>
+                      </tr>
+                      {% endfor%}
+                    </table>
+
+                  </div>
+                    <div class="pagination">
+                      <span class="step-links">
+                        {% if manager_grades.has_previous %}
+                          <a href="?page2=1" style="color:black; font-weight: bold;">&laquo; pierwsza</a>
+                          <a href="?page2={{ manager_grades.previous_page_number }}" style="color:black; font-weight: bold;">poprzednia</a>
+                        {% endif %}
+                        <span class="current" style="color:black; font-weight: bold;">
+                          strona {{ manager_grades.number }} z {{ manager_grades.paginator.num_pages }}.
+                        </span>
+                        {% if manager_grades.has_next %}
+                          <a href="?page2={{ manager_grades.next_page_number }}" style="color:black; font-weight: bold;">następna</a>
+                          <a href="?page2={{ manager_grades.num_pages }}" style="color:black; font-weight: bold;">ostatnia &raquo;</a>
+                        {% endif %}
+                      </span>
+                    </div>
+                  </div>
+                    <br><br>
+                  <div class="col-11">
+                    <br>
+                  <div class="row">
+                    <table class="table table-responsive">
+                      <thead class="thead-dark">
+                        <tr>
+                          <th scope="col" style="width: 10.0%" >USUNIĘTE OCENY Z PRZEDMIOTU:</th>
+                        </tr>
+                      </thead>
+                      {% for grade in manager_canceled_grades %}
+                        <tr>
+                          <th scope="row">
+                            {{grade.date}} {{grade.subject.unique_code}} {{grade.student}} {{grade.student.school_class.unique_code}} {{grade.grade}} / {{grade.weight}} <br>
+                          </th>
+                        </tr>
+                      {% endfor%}
+                    </table>
+                  </div>
+                    <div class="pagination">
+                      <span class="step-links">
+                        {% if manager_canceled_grades.has_previous %}
+                          <a href="?page3=1" style="color:black; font-weight: bold;">&laquo; pierwsza</a>
+                          <a href="?page3={{ manager_canceled_grades.previous_page_number }}" style="color:black; font-weight: bold;">poprzednia</a>
+                        {% endif %}
+                        <span class="current" style="color:black; font-weight: bold;">
+                          strona {{ manager_canceled_grades.number }} z {{ manager_canceled_grades.paginator.num_pages }}.
+                        </span>
+                        {% if manager_canceled_grades.has_next %}
+                          <a href="?page3={{ manager_canceled_grades.next_page_number }}" style="color:black; font-weight: bold;">następna</a>
+                          <a href="?page3={{ manager_canceled_grades.num_pages }}" style="color:black; font-weight: bold;">ostatnia &raquo;</a>
+                        {% endif %}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            <div class="col-6">
+              <div class="row">
+                <h4>TERMINY LEKCJI:</h4>
+              </div>
+              <div class="row">
+                <div class="table-wrap">
+                <table class="table table-responsive">
+                  <thead class="thead-dark">
+                    <tr>
+                      <th scope="col" style="width: 10.0%" >Nr lekcji</th>
+                      <th scope="col" style="width: 15.0%" >Pon</th>
+                      <th scope="col" style="width: 15.0%" >Wt</th>
+                      <th scope="col" style="width: 15.0%" >Śr</th>
+                      <th scope="col" style="width: 15.0%" >Czw</th>
+                      <th scope="col" style="width: 15.0%" >Pt</th>
+                      <th scope="col" style="width: 15.0%" >Sob</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {% for lessons in dates %}
+                      <tr>
+                        <th scope="row">{{forloop.counter}}</th>
+                        {% for day in lessons %}
+                          {% if day is True%}
+                            <div class="col-1 center-block">
+                            <td style="text-align: center !important;">
+                              <i class="material-icons align-text-bottom" style="font-size:25px; ">check_circle</i>
+                              <a class="btn btn-outline-dark" href="{% url 'yourgrades:delete_date' class.unique_code subject.unique_code forloop.counter forloop.parentloop.counter %}" style="font-size:12px;" > usuń </a>
+                            </td>
+                            </div>
+                          {% else %}
+                          <td style="text-align: center !important;">
+                            <i class="material-icons align-text-bottom" style="font-size:15px; ">panorama_fish_eye</i>
+                          </td>
+                          {% endif%}
+                        {% endfor %}
+                      </tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
+                </div>
+              </div>
+              <br>
+              <form action="{% url 'yourgrades:subject_view' class.unique_code subject.unique_code %}" method="POST">
+                {% csrf_token %}
+                <div class="row">
+                  <div class="col-6">
+                    <b>{{form.day.label}}</b>{{form.day}}
+                  </div>
+                  <div class="col-6">
+                    <b>{{form.lesson_number.label}}</b>{{form.lesson_number}}
+                  </div>
+                </div>
+                <br>
+                <div class="row center-block">
+                  <div class="col-6">
+                    <button class="btn btn-outline-secondary text-center" type="submit"><b>WPROWADŹ TERMIN ZAJĘĆ</b></button>
+                  </div>
+                </div>
+                <br>
+                <div class="row">
+                  <div class="col-6">
+                    <a class="btn btn-outline-secondary text-center" href="{% url 'yourgrades:edit_school_class' class.unique_code %}"> <b>WRÓĆ DO PANELU KLASY</b> </a>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+  <script>
+    $(document).ready(function(){
+      $('[data-toggle="tooltip"]').tooltip();
+    });
+  </script>
+{% endblock%}
