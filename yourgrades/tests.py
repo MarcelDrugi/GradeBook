@@ -281,10 +281,6 @@ class MailboxSentTestCase(TestCase):
         max_length = mailbox_sent._meta.get_field('recipient').max_length
         self.assertEqual(max_length, 64)
 
-'''
-Views tests   |________________________________________________________________
-'''
-
 
 def create_user(password):
     username = 'tester'
