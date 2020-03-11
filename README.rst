@@ -31,6 +31,6 @@ The student / parent account allows:
 - download the current timetable,
 - exchange messages with subject teachers and the manager.
 | 
-Example use of the application:
+Example of using an application with a simple frontend:
 ~~~~~~~~~~~~~~~~~~
 | http://gradebook.pythonanywhere.com/yourgrades
