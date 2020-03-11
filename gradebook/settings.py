@@ -76,9 +76,9 @@ WSGI_APPLICATION = 'gradebook.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'gradebook',
-        'USER': 'root',
-        'PASSWORD': 'haslo',
+        'NAME': '',
+        'USER': '',
+        'PASSWORD': '',
     }
 }
 

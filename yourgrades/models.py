@@ -37,39 +37,35 @@ class SchoolClass(models.Model):
         return self.name
 
 
-class Student(models.Model):
+class PersonalData(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE,
                                 primary_key=True)
-    school_class = models.ForeignKey(SchoolClass, on_delete=models.CASCADE)
     name = models.CharField(max_length=64)
     surname = models.CharField(max_length=64)
+    first_login = models.BooleanField(default=True)
+
+    class Meta:
+        abstract = True
+
+
+class Student(PersonalData):
+    school_class = models.ForeignKey(SchoolClass, on_delete=models.CASCADE)
     birthday = models.DateField()
     email = models.EmailField(blank=True)
-    first_login = models.BooleanField(default=True)
 
     def __str__(self):
         return self.name + ' ' + self.surname
 
 
-class Parent(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE,
-                                primary_key=True)
+class Parent(PersonalData):
     student = models.ForeignKey(Student, on_delete=models.CASCADE)
-    name = models.CharField(max_length=64)
-    surname = models.CharField(max_length=64)
-    first_login = models.BooleanField(default=True)
 
     def __str__(self):
         return self.name + ' ' + self.surname
 
 
-class Teacher(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE,
-                                primary_key=True)
-    name = models.CharField(max_length=64)
-    surname = models.CharField(max_length=64)
+class Teacher(PersonalData):
     email = models.EmailField()
-    first_login = models.BooleanField(default=True)
     active = models.BooleanField(default=True)
 
     def __str__(self):
@@ -126,7 +122,7 @@ class SubjectTeachers(models.Model):
     subject = models.ForeignKey(Subject, on_delete=models.CASCADE)
 
 
-class Grades(models.Model):
+class GradesData(models.Model):
     weight = models.IntegerField(
         validators=[MaxValueValidator(10), MinValueValidator(1)])
     grade = models.IntegerField(
@@ -134,17 +130,17 @@ class Grades(models.Model):
     student = models.ForeignKey(Student, on_delete=models.CASCADE)
     subject = models.ForeignKey(Subject, on_delete=models.CASCADE)
     date = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        abstract = True
+
+
+class Grades(GradesData):
     manager_mode = models.BooleanField(default=False)
 
 
-class CanceledGrades(models.Model):
-    weight = models.IntegerField(
-        validators=[MaxValueValidator(10), MinValueValidator(1)])
-    grade = models.IntegerField(
-        validators=[MaxValueValidator(6), MinValueValidator(1)])
-    student = models.ForeignKey(Student, on_delete=models.CASCADE)
-    subject = models.ForeignKey(Subject, on_delete=models.CASCADE)
-    date = models.DateTimeField(auto_now_add=True)
+class CanceledGrades(GradesData):
+    pass
 
 
 class Message(models.Model):
@@ -153,32 +149,41 @@ class Message(models.Model):
     date = models.DateTimeField(auto_now_add=True)
 
 
-class Sender(models.Model):
+class Correspondent(models.Model):
     id = models.AutoField(primary_key=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
+
+    class Meta:
+        abstract = True
+
+
+class Sender(Correspondent):
     message = models.OneToOneField(Message, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.user.first_name + ' ' + self.user.last_name
 
 
-class Recipient(models.Model):
-    id = models.AutoField(primary_key=True)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+class Recipient(Correspondent):
     message = models.ForeignKey(Message, on_delete=models.CASCADE)
 
+    def __str__(self):
+        return self.user.first_name + ' ' + self.user.last_name
 
-class MailboxReceived(models.Model):
+
+class Mailbox(models.Model):
     id = models.AutoField(primary_key=True)
     sender = models.ForeignKey(Sender, on_delete=models.CASCADE)
-    recipient = models.ForeignKey(Recipient, on_delete=models.CASCADE)
     message = models.ForeignKey(Message, on_delete=models.CASCADE)
+
+    class Meta:
+        abstract = True
+
+
+class MailboxReceived(Mailbox):
+    recipient = models.ForeignKey(Recipient, on_delete=models.CASCADE)
     read = models.BooleanField(default=False)
 
 
-class MailboxSent(models.Model):
-    id = models.AutoField(primary_key=True)
-    sender = models.ForeignKey(Sender, on_delete=models.CASCADE)
+class MailboxSent(Mailbox):
     recipient = models.CharField(max_length=64)
-    message = models.ForeignKey(Message, on_delete=models.CASCADE)
-
