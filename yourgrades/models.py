@@ -5,7 +5,6 @@ from django.core.validators import (RegexValidator, MaxValueValidator,
 from django.contrib.auth.models import User
 
 
-# Create your models here.
 class RightsSupport(models.Model):
 
     class Meta:
