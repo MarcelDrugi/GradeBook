@@ -22,14 +22,14 @@
     DATABASE_NAME=name_of_created_databas
     DATABASE_USER=username
     DATABASE_PASSWORD=password
-###### 8. Go to the project main directory(<span style="color:black">/rate/backend/rate</span>) and run server:
-    python3 manage.py runserver
-###### 9. Make the migration
+###### 8. Go to the project main directory(<span style="color:black">/rate/backend/rate</span>) and make the migration
     python3 managey makemigrations
     python3 managey migrate
-###### 10. Create superuser
+###### 9. Create superuser
     python3 manage.py createsuperuser
-###### 11. Login as superuser, create a manager account and assign it the permission:
+###### 10. Run the server:
+    python3 manage.py runserver
+###### 11. Login as superuser, create a school-manager account and assign it the permission:
     yourgrades|rights support|Global manager rights
 ###### 12. After logging in as a manager through the home page, you will be able to create student / parent / teacher accounts, create classes, manage them and use other functionalities to build a gradebook
 #####
