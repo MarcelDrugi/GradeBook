@@ -3,18 +3,7 @@ from django.core.validators import (RegexValidator, MaxValueValidator,
                                     MinValueValidator
                                     )
 from django.contrib.auth.models import User
-
-
-class RightsSupport(models.Model):
-
-    class Meta:
-        managed = False  # No table create after migration
-        permissions = (
-            ('manager', 'Global manager rights'),
-            ('teacher', 'Global teacher rights'),
-            ('student', 'Global student rights'),
-            ('parent', 'Global parent rights'),
-        )
+from .permissions import RightsSupport
 
 
 class SchoolClass(models.Model):
