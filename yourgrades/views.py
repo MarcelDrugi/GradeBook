@@ -760,7 +760,7 @@ class ManagerStudentView(LoginRequiredMixin, UserPassesTestMixin,
         try:
             message = Message(
                 subject='Nowa ocena',
-                text='Wprowadzono nową ocenę z przedmiotu' + subject.name +
+                text='Wprowadzono nowa ocene z przedmiotu' + subject.name +
                 '. Twoja ocena to  ' + str(grade.grade) + '  o wadze  ' +
                 str(grade.weight) + '.',
             )
