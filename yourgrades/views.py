@@ -21,7 +21,8 @@ class BaseView(TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         unread = MailboxReceived.objects.filter(
-            recipient__user=self.request.user, read=False)
+            recipient__user=self.request.user, read=False
+        )
         context['unread'] = len(unread)
         try:
             context['username'] = self.request.session['user']
@@ -146,8 +147,10 @@ class FirstLoginView(LoginRequiredMixin, UserPassesTestMixin, ProcessFormView,
             except IntegrityError:
                 raise Http404('Password problem.')
         else:
-            return render(self.request, 'yourgrades/firstlogin.html',
-                          {'form': form, 'pass_no_confirm': True})
+            return render(
+                self.request, 'yourgrades/firstlogin.html',
+                {'form': form, 'pass_no_confirm': True}
+            )
         user_permission = list(self.request.user.get_all_permissions())[0]
         person = get_object_or_404(self.permission[user_permission], user=user)
         person.first_login = False
@@ -735,9 +738,11 @@ class ManagerStudentView(LoginRequiredMixin, UserPassesTestMixin,
             sender.save()
             recipient = Recipient(user=grade.student.user, message=message)
             recipient.save()
-            mailbox_received = MailboxReceived(sender=sender,
-                                               recipient=recipient,
-                                               message=message)
+            mailbox_received = MailboxReceived(
+                sender=sender,
+                recipient=recipient,
+                message=message
+            )
             mailbox_received.save()
             grade.delete()
             self.kwargs['del'] = True
@@ -936,10 +941,12 @@ class ManagerStudentEditView(LoginRequiredMixin, UserPassesTestMixin,
         parents = Parent.objects.filter(student=student).order_by(
             'user__id')
         self.kwargs['parents'] = parents
-        initial = {'name': student.name, 'surname': student.surname,
-                    'birthday': student.birthday,
-                    'first_parent_name': parents[0].name,
-                    'first_parent_surname': parents[0].surname}
+        initial = {
+            'name': student.name, 'surname': student.surname,
+            'birthday': student.birthday,
+            'first_parent_name': parents[0].name,
+            'first_parent_surname': parents[0].surname
+        }
         try:
             initial['second_parent_name'] = parents[1].name
             initial['second_parent_surname'] = parents[1].surname
@@ -1134,8 +1141,10 @@ class TeacherSubjectView(LoginRequiredMixin, UserPassesTestMixin,
         # Method is called only when data is valid
         subject = get_object_or_404(Subject, unique_code=self.kwargs[
             'subject_unique_code'])
-        student = get_object_or_404(Student,
-                                    user__id=self.request.POST.get('student'))
+        student = get_object_or_404(
+            Student,
+            user__id=self.request.POST.get('student')
+        )
         try:
             grade = form.save(commit=False)
             grade.student = student
@@ -1215,37 +1224,46 @@ class CreateMessageView(LoginRequiredMixin, UserPassesTestMixin,
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         if self.kwargs['prefix'] == 1:
-            context['recipient'] = get_object_or_404(SchoolClass,
-                                                     unique_code=self.kwargs[
-                                                         'code'])
+            context['recipient'] = get_object_or_404(
+                SchoolClass,
+                unique_code=self.kwargs['code']
+            )
             context['recipient_type'] = 1
         elif self.kwargs['prefix'] == 2:
             context['recipient'] = get_object_or_404(
-                SchoolClass, unique_code=self.kwargs['code']
+                SchoolClass,
+                unique_code=self.kwargs['code']
             )
             context['recipient_type'] = 2
         elif self.kwargs['prefix'] == 3:
-            subject = get_object_or_404(Subject,
-                                        unique_code=self.kwargs['code'])
-            context['recipient'] = get_object_or_404(SubjectTeachers,
-                                                     subject=subject)
+            subject = get_object_or_404(
+                Subject,
+                unique_code=self.kwargs['code']
+            )
+            context['recipient'] = get_object_or_404(
+                SubjectTeachers,
+                subject=subject
+            )
             context['recipient_type'] = 3
         elif self.kwargs['prefix'] == 4:
-            context['recipient'] = get_object_or_404(Student,
-                                                     user__id=self.kwargs[
-                                                         'code'])
+            context['recipient'] = get_object_or_404(
+                Student,
+                user__id=self.kwargs['code']
+            )
             context['recipient_type'] = 4
         elif self.kwargs['prefix'] == 5:
-            context['recipient'] = get_object_or_404(Student,
-                                                     user__id=self.kwargs[
-                                                         'code'])
+            context['recipient'] = get_object_or_404(
+                Student,
+                user__id=self.kwargs['code']
+            )
             context['recipient_type'] = 5
         elif self.kwargs['prefix'] == 6:
             context['recipient_type'] = 6
         elif self.kwargs['prefix'] == 7:
-            context['recipient'] = get_object_or_404(Teacher,
-                                                     user__id=self.kwargs[
-                                                         'code'])
+            context['recipient'] = get_object_or_404(
+                Teacher,
+                user__id=self.kwargs['code']
+            )
             context['recipient_type'] = 7
         return context
 
@@ -1274,9 +1292,11 @@ class CreateMessageView(LoginRequiredMixin, UserPassesTestMixin,
                 if self.kwargs['prefix'] == 1:
                     recipient = Recipient(user=student.user, message=message)
                     recipient.save()
-                    mailbox_received = MailboxReceived(sender=sender,
-                                                       recipient=recipient,
-                                                       message=message)
+                    mailbox_received = MailboxReceived(
+                        sender=sender,
+                        recipient=recipient,
+                        message=message
+                    )
                     mailbox_received.save()
                 else:
                     parents = Parent.objects.filter(student=student)
@@ -1284,9 +1304,11 @@ class CreateMessageView(LoginRequiredMixin, UserPassesTestMixin,
                         recipient = Recipient(user=parent.user,
                                               message=message)
                         recipient.save()
-                        mailbox_received = MailboxReceived(sender=sender,
-                                                           recipient=recipient,
-                                                           message=message)
+                        mailbox_received = MailboxReceived(
+                            sender=sender,
+                            recipient=recipient,
+                            message=message
+                        )
                         mailbox_received.save()
         elif self.kwargs['prefix'] == 3:
             subject = get_object_or_404(Subject,

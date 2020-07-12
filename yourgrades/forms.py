@@ -10,8 +10,11 @@ class SchoolClassForm(forms.ModelForm):
         self.fields['name'].widget = forms.TextInput(
             attrs={'placeholder': 'np. 1a', 'class': 'form-control input-sm'})
         self.fields['year'].widget = forms.NumberInput(
-            attrs={'placeholder': 'np. 1990',
-                   'class': 'form-control input-sm'})
+            attrs={
+                'placeholder': 'np. 1990',
+                'class': 'form-control input-sm'
+            }
+        )
 
     unique_code = forms.CharField(
         max_length=6,
@@ -24,77 +27,145 @@ class SchoolClassForm(forms.ModelForm):
     class Meta:
         model = SchoolClass
         fields = ['name', 'year', 'unique_code']
-        labels = {'name': 'nazwa klasy', 'unique_code': 'kod klasy',
-                  'year': 'rok zakończenia nauki'}
+        labels = {
+            'name': 'nazwa klasy',
+            'unique_code': 'kod klasy',
+            'year': 'rok zakończenia nauki'
+        }
 
 
 class CreateStudentForm(forms.Form):
-    name = forms.CharField(max_length=64, label='Imię ucznia:',
-                           widget=forms.TextInput(
-                               attrs={'placeholder': 'wprowadź imię',
-                                      'class': 'form-control'}))
-    surname = forms.CharField(max_length=64, label='Nazwisko ucznia:',
-                              widget=forms.TextInput(
-                                  attrs={'placeholder': 'wprowadź nazwisko',
-                                         'class': 'form-control'}))
-    birthday = forms.DateField(label='Data urodzenia (rrrr-mm-dd):',
-                               widget=forms.TextInput(
-                                   attrs={'placeholder': 'wprowadź datę',
-                                          'class': 'form-control'}))
-    first_parent_name = forms.CharField(max_length=64, label='Imię rodzica:',
-                                        widget=forms.TextInput(attrs={
-                                            'placeholder': 'wprowadź imię',
-                                            'class': 'form-control'}))
-    first_parent_surname = forms.CharField(max_length=64,
-                                           label='Nazwosko rodzica:',
-                                           widget=forms.TextInput(attrs={
-                                               'placeholder':
-                                                   'wprowadź nazwisko',
-                                               'class': 'form-control'}))
-    second_parent_name = forms.CharField(max_length=64, required=False,
-                                         label='Imię drugiego rodzica:',
-                                         widget=forms.TextInput(attrs={
-                                             'placeholder': 'wprowadź imię',
-                                             'class': 'form-control'}))
-    second_parent_surname = forms.CharField(max_length=64, required=False,
-                                            label='Nazwosko drugiego rodzica:',
-                                            widget=forms.TextInput(attrs={
-                                                'placeholder':
-                                                    'wprowadź nazwisko',
-                                                'class': 'form-control'}))
+    name = forms.CharField(
+        max_length=64,
+        label='Imię ucznia:',
+        widget=forms.TextInput(
+            attrs={
+                'placeholder': 'wprowadź imię',
+                'class': 'form-control'
+            }
+        )
+    )
+    surname = forms.CharField(
+        max_length=64,
+        label='Nazwisko ucznia:',
+        widget=forms.TextInput(
+            attrs={
+                'placeholder': 'wprowadź nazwisko',
+                'class': 'form-control'
+            }
+        )
+    )
+    birthday = forms.DateField(
+        label='Data urodzenia (rrrr-mm-dd):',
+        widget=forms.TextInput(
+            attrs={
+                'placeholder': 'wprowadź datę',
+                'class': 'form-control'
+            }
+        )
+    )
+    first_parent_name = forms.CharField(
+        max_length=64,
+        label='Imię rodzica:',
+        widget=forms.TextInput(
+            attrs={
+                'placeholder': 'wprowadź imię',
+                'class': 'form-control'
+            }
+        )
+    )
+    first_parent_surname = forms.CharField(
+        max_length=64,
+        label='Nazwosko rodzica:',
+            widget=forms.TextInput(
+                attrs={
+                    'placeholder':'wprowadź nazwisko',
+                    'class': 'form-control'
+                }
+            )
+    )
+    second_parent_name = forms.CharField(
+        max_length=64,
+        required=False,
+        label='Imię drugiego rodzica:',
+        widget=forms.TextInput(
+            attrs={
+                'placeholder': 'wprowadź imię',
+                'class': 'form-control'
+            }
+        )
+    )
+    second_parent_surname = forms.CharField(
+        max_length=64,
+        required=False,
+        label='Nazwosko drugiego rodzica:',
+        widget=forms.TextInput(
+            attrs={
+                'placeholder':'wprowadź nazwisko',
+                'class': 'form-control'
+            }
+        )
+    )
 
 
 class CreateTeacherForm(forms.Form):
-    name = forms.CharField(max_length=64, label='Imię:',
-                           widget=forms.TextInput(
-                               attrs={'placeholder': 'wprowadź imię',
-                                      'class': 'form-control'}))
-    surname = forms.CharField(max_length=64, label='Naziwsko:',
-                              widget=forms.TextInput(
-                                  attrs={'placeholder': 'wprowadź imię',
-                                         'class': 'form-control'}))
+    name = forms.CharField(
+        max_length=64,
+        label='Imię:',
+        widget=forms.TextInput(
+            attrs={
+                'placeholder': 'wprowadź imię',
+                'class': 'form-control'
+            }
+        )
+    )
+    surname = forms.CharField(
+        max_length=64,
+        label='Naziwsko:',
+        widget=forms.TextInput(
+            attrs={
+                'placeholder': 'wprowadź imię',
+                'class': 'form-control'
+            }
+        )
+    )
 
 
 class CreateSubjectForm(forms.Form):
-    name = forms.CharField(max_length=128, label='Nazwa',
-                           widget=forms.TextInput(
-                               attrs={'placeholder': 'wprowadź nazwę',
-                                      'class': 'form-control'}))
-    shortcut = forms.CharField(max_length=2, label='Skrót',
-                               help_text='Dwuliterowy skrót nazwy przedmiotu',
-                               widget=forms.TextInput(attrs={
-                                   'placeholder': 'wprowadź dwuliterowy skrót',
-                                   'class': 'form-control'}))
+    name = forms.CharField(
+        max_length=128,
+        label='Nazwa',
+        widget=forms.TextInput(
+            attrs={
+                'placeholder': 'wprowadź nazwę',
+                'class': 'form-control'
+            }
+        )
+    )
+    shortcut = forms.CharField(
+        max_length=2,
+        label='Skrót',
+        help_text='Dwuliterowy skrót nazwy przedmiotu',
+        widget=forms.TextInput(
+            attrs={
+                'placeholder': 'wprowadź dwuliterowy skrót',
+                'class': 'form-control'
+            }
+        )
+    )
     teachers = forms.ModelMultipleChoiceField(
         widget=forms.CheckboxSelectMultiple(attrs={'class': ''}),
         queryset=Teacher.objects.filter(active=True),
-        required=False, label='Wybierz nauczycieli')
+        required=False,
+        label='Wybierz nauczycieli'
+    )
 
 
 class AddSubjectTeacherForm(forms.Form):
     teachers = forms.ModelMultipleChoiceField(
         widget=forms.CheckboxSelectMultiple,
-        queryset=Teacher.objects.filter(active=True))
+        queryset=Teacher.objects.filter(active=True)
+    )
 
 
 class AddGradeForm(forms.ModelForm):
@@ -130,25 +201,57 @@ class MessageForm(forms.ModelForm):
 
 
 class LoginForm(forms.Form):
-    username = forms.CharField(label='login:', widget=forms.TextInput(
-        attrs={'placeholder': 'wprowadź login', 'class': 'form-control'}))
-    password = forms.CharField(label='haslo:', min_length=5,
-                               widget=forms.PasswordInput(
-                                   attrs={'placeholder': 'wprowadź hasło',
-                                          'class': 'form-control'}))
+    username = forms.CharField(
+        label='login:',
+        widget=forms.TextInput(
+            attrs={
+                'placeholder': 'wprowadź login',
+                'class': 'form-control'
+            }
+        )
+    )
+    password = forms.CharField(
+        label='haslo:',
+        min_length=5,
+        widget=forms.PasswordInput(
+            attrs={
+                'placeholder': 'wprowadź hasło',
+                'class': 'form-control'
+            }
+        )
+    )
 
 
 class FirstLoginForm(forms.Form):
-    username = forms.CharField(label='login', widget=forms.TextInput(
-        attrs={'placeholder': 'wprowadź login', 'class': 'form-control'}))
-    password = forms.CharField(label='haslo', min_length=5,
-                               widget=forms.PasswordInput(
-                                   attrs={'placeholder': 'wprowadź hasło',
-                                          'class': 'form-control'}))
-    password_confirm = forms.CharField(label=' potwierdź haslo', min_length=5,
-                                       widget=forms.PasswordInput(attrs={
-                                           'placeholder': 'potwierdzenie',
-                                           'class': 'form-control'}))
+    username = forms.CharField(
+        label='login',
+        widget=forms.TextInput(
+            attrs={
+                'placeholder': 'wprowadź login',
+                'class': 'form-control'
+            }
+        )
+    )
+    password = forms.CharField(
+        label='haslo',
+        min_length=5,
+        widget=forms.PasswordInput(
+            attrs={
+                'placeholder': 'wprowadź hasło',
+                'class': 'form-control'
+            }
+        )
+    )
+    password_confirm = forms.CharField(
+        label=' potwierdź haslo',
+        min_length=5,
+        widget=forms.PasswordInput(
+            attrs={
+                'placeholder': 'potwierdzenie',
+                'class': 'form-control'
+            }
+        )
+    )
 
 
 class AddSubjectDateForm(forms.ModelForm):

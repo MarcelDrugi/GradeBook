@@ -29,10 +29,13 @@ class StudentTestCase(TestCase):
         school_class_data = {'unique_code': '1b2020', 'name': '1b',
                              'year': 2020}
         school_class = SchoolClass.objects.create(**school_class_data)
-        Student.objects.create(user=user, school_class=school_class,
-                               name='Adam', surname='Nowak',
-                               birthday='2011-03-29',
-                               email='jankowalski@example.pl')
+        Student.objects.create(
+            user=user,
+            school_class=school_class,
+            name='Adam', surname='Nowak',
+            birthday='2011-03-29',
+            email='jankowalski@example.pl'
+        )
 
     def test_student(self):
         student = Student.objects.get(user__username='AdamNowak')
@@ -54,16 +57,24 @@ class ParentTestCase(TestCase):
         SchoolClass.objects.create(**school_class_data)
         school_class = SchoolClass.objects.get(
             unique_code=school_class_data['unique_code'])
-        Student.objects.create(user=student_user, school_class=school_class,
-                               name='Adam', surname='Nowak',
-                               birthday='2011-03-29',
-                               email='jankowalski@example.pl')
+        Student.objects.create(
+            user=student_user,
+            school_class=school_class,
+            name='Adam',
+            surname='Nowak',
+            birthday='2011-03-29',
+            email='jankowalski@example.pl'
+        )
         student = Student.objects.get(user=student_user)
         parent_user_data = {'username': 'AnnaNowak', 'password': 'annaspass'}
         User.objects.create_user(**parent_user_data)
         parent_user = User.objects.get(username=parent_user_data['username'])
-        Parent.objects.create(user=parent_user, student=student, name='Anna',
-                              surname='Nowak')
+        Parent.objects.create(
+            user=parent_user,
+            student=student,
+            name='Anna',
+            surname='Nowak'
+        )
 
     def test_parent(self):
         parent = Parent.objects.get(user__username='AnnaNowak')
@@ -76,8 +87,12 @@ class TeacherTestCase(TestCase):
     def setUp(self):
         teacher_user_data = {'username': 'KarolNowak', 'password': 'karospass'}
         teacher_user = User.objects.create_user(**teacher_user_data)
-        Teacher.objects.create(user=teacher_user, name='Karol',
-                               surname='Nowak', email='karolnowak@example.pl')
+        Teacher.objects.create(
+            user=teacher_user,
+            name='Karol',
+            surname='Nowak',
+            email='karolnowak@example.pl'
+        )
 
     def test_teacher(self):
         teacher = Teacher.objects.get(user__username='KarolNowak')
@@ -90,10 +105,16 @@ class TeacherTestCase(TestCase):
 
 class SubjectTestCase(TestCase):
     def setUp(self):
-        school_class = SchoolClass.objects.create(unique_code='1d2020',
-                                                  name='1d', year=2020)
-        Subject.objects.create(name='History', unique_code='Hi1d2020',
-                               school_class=school_class)
+        school_class = SchoolClass.objects.create(
+            unique_code='1d2020',
+            name='1d',
+            year=2020
+        )
+        Subject.objects.create(
+            name='History',
+            unique_code='Hi1d2020',
+            school_class=school_class
+        )
 
     def subject_test(self):
         subject = Subject.object.get(name='History')
@@ -104,17 +125,25 @@ class SubjectTestCase(TestCase):
 
 class SubjectTeacherTestCase(TestCase):
     def setUp(self):
-        school_class = SchoolClass.objects.create(unique_code='1e2020',
-                                                  name='1e', year=2020)
-        subject = Subject.objects.create(name='Chemistry',
-                                         unique_code='Ch1e2020',
-                                         school_class=school_class)
+        school_class = SchoolClass.objects.create(
+            unique_code='1e2020',
+            name='1e',
+            year=2020
+        )
+        subject = Subject.objects.create(
+            name='Chemistry',
+            unique_code='Ch1e2020',
+            school_class=school_class
+        )
         teacher_user_data = {'username': 'MarcinNowak',
                              'password': 'marcinspass'}
         teacher_user = User.objects.create_user(**teacher_user_data)
-        teacher = Teacher.objects.create(user=teacher_user, name='Marcin',
-                                         surname='Nowak',
-                                         email='marcinnowak@example.pl')
+        teacher = Teacher.objects.create(
+            user=teacher_user,
+            name='Marcin',
+            surname='Nowak',
+            email='marcinnowak@example.pl'
+        )
         subject_teacher = SubjectTeachers.objects.create(subject=subject)
         subject_teacher.teacher.add(teacher)
 
@@ -127,11 +156,16 @@ class SubjectTeacherTestCase(TestCase):
 
 class SubjectDateTestCase(TestCase):
     def setUp(self):
-        school_class = SchoolClass.objects.create(unique_code='4e2020',
-                                                  name='4e', year=2020)
-        subject = Subject.objects.create(name='Biology',
-                                         unique_code='Bi4e2020',
-                                         school_class=school_class)
+        school_class = SchoolClass.objects.create(
+            unique_code='4e2020',
+            name='4e',
+            year=2020
+        )
+        subject = Subject.objects.create(
+            name='Biology',
+            unique_code='Bi4e2020',
+            school_class=school_class
+        )
         SubjectDate.objects.create(day='Mo', lesson_number=4, subject=subject)
 
     def test_subject_date(self):
@@ -146,17 +180,30 @@ class GradesTestCase(TestCase):
     def setUp(self):
         user_data = {'username': 'MarekNowak', 'password': 'marekspass'}
         user = User.objects.create_user(**user_data)
-        school_class_data = {'unique_code': '1f2020', 'name': '1f',
-                             'year': 2020}
+        school_class_data = {
+            'unique_code': '1f2020',
+            'name': '1f',
+            'year': 2020
+        }
         school_class = SchoolClass.objects.create(**school_class_data)
-        student = Student.objects.create(user=user, school_class=school_class,
-                                         name='Marek', surname='Nowak',
-                                         birthday='2011-04-11',
-                                         email='mareknowak@example.pl')
-        subject = Subject.objects.create(name='Maths', unique_code='Ma1d2020',
-                                         school_class=school_class)
-        Grades.objects.create(weight=8, grade=5, student=student,
-                              subject=subject)
+        student = Student.objects.create(
+            user=user,
+            school_class=school_class,
+            name='Marek', surname='Nowak',
+            birthday='2011-04-11',
+            email='mareknowak@example.pl'
+        )
+        subject = Subject.objects.create(
+            name='Maths',
+            unique_code='Ma1d2020',
+            school_class=school_class
+        )
+        Grades.objects.create(
+            weight=8,
+            grade=5,
+            student=student,
+            subject=subject
+        )
 
     def test_grades(self):
         grade = Grades.objects.get(student__user__username='MarekNowak')
@@ -171,15 +218,25 @@ class CanceledGradesTestCase(TestCase):
     def setUp(self):
         user_data = {'username': 'KamilNowak', 'password': 'kamilspass'}
         user = User.objects.create_user(**user_data)
-        school_class_data = {'unique_code': '1g2020', 'name': '1g',
-                             'year': 2020}
+        school_class_data = {
+            'unique_code': '1g2020',
+            'name': '1g',
+            'year': 2020
+        }
         school_class = SchoolClass.objects.create(**school_class_data)
-        student = Student.objects.create(user=user, school_class=school_class,
-                                         name='Kamil', surname='Nowak',
-                                         birthday='2010-04-11',
-                                         email='kamilnowak@example.pl')
-        subject = Subject.objects.create(name='Gym', unique_code='Gy1d2020',
-                                         school_class=school_class)
+        student = Student.objects.create(
+            user=user,
+            school_class=school_class,
+            name='Kamil',
+            surname='Nowak',
+            birthday='2010-04-11',
+            email='kamilnowak@example.pl'
+        )
+        subject = Subject.objects.create(
+            name='Gym',
+            unique_code='Gy1d2020',
+            school_class=school_class
+        )
         CanceledGrades.objects.create(weight=9, grade=4, student=student,
                                       subject=subject)
 
@@ -210,8 +267,11 @@ class MessageTestCase(TestCase):
 
 class SenderTestCse(TestCase):
     def setUp(self):
-        message = Message.objects.create(id=2, subject='Test subject',
-                                         text='Test text.')
+        message = Message.objects.create(
+            id=2,
+            subject='Test subject',
+            text='Test text.'
+        )
         user_data = {'username': 'JanMalinowski', 'password': 'janspass'}
         user = User.objects.create_user(**user_data)
         user.first_name = 'Jan'
@@ -222,14 +282,19 @@ class SenderTestCse(TestCase):
     def test_sender(self):
         sender = Sender.objects.get(message__id=2)
         self.assertTrue(isinstance(sender, Sender))
-        self.assertEqual(sender.__str__(),
-                         sender.user.first_name + ' ' + sender.user.last_name)
+        self.assertEqual(
+            sender.__str__(),
+            sender.user.first_name + ' ' + sender.user.last_name
+        )
 
 
 class RecipientTestCase(TestCase):
     def setUp(self):
-        message = Message.objects.create(id=3, subject='Test subject',
-                                         text='Test text.')
+        message = Message.objects.create(
+            id=3,
+            subject='Test subject',
+            text='Test text.'
+        )
         user_data = {'username': 'AdamMalinowski', 'password': 'adamspass'}
         user = User.objects.create_user(**user_data)
         user.save()
@@ -243,17 +308,25 @@ class RecipientTestCase(TestCase):
 
 class MailboxReceivedTestCase(TestCase):
     def setUp(self):
-        message = Message.objects.create(id=4, subject='Test subject',
-                                         text='Test text.')
+        message = Message.objects.create(
+            id=4,
+            subject='Test subject',
+            text='Test text.'
+        )
         user_recipient_data = {'username': 'AdamRak', 'password': 'adamspass'}
         user_recipient = User.objects.create_user(**user_recipient_data)
-        recipient = Recipient.objects.create(user=user_recipient,
-                                             message=message)
+        recipient = Recipient.objects.create(
+            user=user_recipient,
+            message=message
+        )
         user_sender_data = {'username': 'AdamRyba', 'password': 'adamspass'}
         user_sender = User.objects.create_user(**user_sender_data)
         sender = Sender.objects.create(user=user_sender, message=message)
-        MailboxReceived.objects.create(sender=sender, recipient=recipient,
-                                       message=message)
+        MailboxReceived.objects.create(
+            sender=sender,
+            recipient=recipient,
+            message=message
+        )
 
     def test_mailbox_received(self):
         mailbox_received = MailboxReceived.objects.get(message__id=4)
@@ -292,40 +365,56 @@ def create_user(password):
             username += str(numbering)
         except User.DoesNotExist:
             return User.objects.create_user(
-                username=username, password=password,
-                first_name='Name', last_name='Surname')
+                username=username,
+                password=password,
+                first_name='Name',
+                last_name='Surname'
+            )
 
 
 def create_person(kind, password):
     content_type = ContentType.objects.get_for_model(RightsSupport)
-    permission = Permission.objects.get(content_type=content_type,
-                                        codename=kind)
+    permission = Permission.objects.get(
+        content_type=content_type,
+        codename=kind
+    )
     if kind in {'student', 'parent'}:
         user = create_user(password)
         user.user_permissions.add(permission)
         try:
             school_class = SchoolClass.objects.get(unique_code='2a2020')
         except SchoolClass.DoesNotExist:
-            school_class = SchoolClass.objects.create(unique_code='2a2020',
-                                                      name='2a', year=2020)
-        student = Student.objects.create(user=user,
-                                         school_class=school_class,
-                                         name=user.first_name,
-                                         surname=user.last_name,
-                                         birthday='2010-03-29')
+            school_class = SchoolClass.objects.create(
+                unique_code='2a2020',
+                name='2a',
+                year=2020
+            )
+        student = Student.objects.create(
+            user=user,
+            school_class=school_class,
+            name=user.first_name,
+            surname=user.last_name,
+            birthday='2010-03-29'
+        )
         if kind == 'student':
             return student
         if kind == 'parent':
             user = create_user(password)
             user.user_permissions.add(permission)
-            return Parent.objects.create(user=user, student=student,
-                                         name=user.first_name,
-                                         surname=user.last_name)
+            return Parent.objects.create(
+                user=user,
+                student=student,
+                name=user.first_name,
+                surname=user.last_name
+            )
     if kind == 'teacher':
         user = create_user(password)
         user.user_permissions.add(permission)
-        return Teacher.objects.create(user=user, name=user.first_name,
-                                      surname=user.last_name)
+        return Teacher.objects.create(
+            user=user,
+            name=user.first_name,
+            surname=user.last_name
+        )
 
 
 def create_manager(password):
@@ -337,10 +426,12 @@ def create_manager(password):
             numbering += 1
             username += str(numbering)
         except User.DoesNotExist:
-            user = User.objects.create_user(username=username,
-                                            password=password,
-                                            first_name='Name',
-                                            last_name='Surname')
+            user = User.objects.create_user(
+                username=username,
+                password=password,
+                first_name='Name',
+                last_name='Surname'
+            )
             content_type = ContentType.objects.get_for_model(RightsSupport)
             permission = Permission.objects.get(content_type=content_type,
                                                 codename='manager')
@@ -383,12 +474,17 @@ class HomepageViewTestCase(TestCase):
     def test_homepage_view(self):
         response = Client().get(reverse('yourgrades:homepage'))
         self.assertEqual(response.status_code, 200)
+
         # Post with clean form or with wrong data -> not redirects
         response = Client().post(reverse('yourgrades:homepage'))
         self.assertEqual(response.status_code, 200)
-        response = Client().post(reverse('yourgrades:homepage'),
-                                 {'username': 'tester',
-                                  'password': 'wrongpass'})
+        response = Client().post(
+            reverse('yourgrades:homepage'),
+            {
+                'username': 'tester',
+                'password': 'wrongpass'
+            }
+        )
         self.assertEqual(response.status_code, 200)
 
         # Student redirection tests
@@ -473,37 +569,57 @@ class FirstLoginViewTestCase(TestCase):
     def setUp(self):
         no_perm_user = create_user(self.password)
         self.client_1 = Client()
-        self.client_1.login(username=no_perm_user.username,
-                            password=self.password)
+        self.client_1.login(
+            username=no_perm_user.username,
+            password=self.password
+        )
         # Create Student (with assigned User) and login him
         self.student = create_person('student', self.password)
         self.client_2 = Client()
-        self.client_2.login(username=self.student.user.username,
-                            password=self.password)
+        self.client_2.login(
+            username=self.student.user.username,
+            password=self.password
+        )
 
     def test_first_login(self):
         # GET, user without permission -> 403
         response = self.client_1.get(reverse('yourgrades:first_login'))
         self.assertEqual(response.status_code, 403)
+
         # GET, user with permission -> 200
         response = self.client_2.get(reverse('yourgrades:first_login'))
         self.assertEqual(response.status_code, 200)
+
         # POST with wrong form data (or no form data) -> no redirection
-        response = self.client_2.post(reverse('yourgrades:first_login'),
-                                      {'username': '', 'password': 'anything',
-                                       'password_confirm': 'incorrect'})
+        response = self.client_2.post(
+            reverse('yourgrades:first_login'),
+            {
+                'username': '',
+                'password': 'anything',
+                'password_confirm': 'incorrect'
+            }
+        )
         self.assertEqual(response.status_code, 200)
+
         # POST, user with good permission and correct form
         # -> redirection to assigned panel
-        form_data = {'username': 'newusername', 'password': 'newpass',
-                     'password_confirm': 'newpass'}
+        form_data = {
+            'username': 'newusername',
+            'password': 'newpass',
+            'password_confirm': 'newpass'
+        }
         self.assertTrue(FirstLoginForm(form_data).is_valid())
-        response = self.client_2.post(reverse('yourgrades:first_login'),
-                                      form_data)
+        response = self.client_2.post(
+            reverse('yourgrades:first_login'),
+            form_data
+        )
         self.assertEqual(response.status_code, 302)
         self.assertRedirects(response, '/yourgrades/studentparent')
-        response = self.client_2.post(reverse('yourgrades:first_login'),
-                                      form_data, follow=True)
+        response = self.client_2.post(
+            reverse('yourgrades:first_login'),
+            form_data,
+            follow=True
+        )
         self.assertTemplateUsed(response, 'yourgrades/studentparent.html')
 
 
@@ -513,18 +629,23 @@ class ManagerPanelViewTestCase(TestCase):
     def setUp(self):
         user = create_user(self.password)
         self.client_1 = Client()
-        self.client_1.login(username=user.username,
-                            password=self.password)
+        self.client_1.login(
+            username=user.username,
+            password=self.password
+        )
 
         user_manager = create_manager(self.password)
         self.client_2 = Client()
-        self.client_2.login(username=user_manager.username,
-                            password=self.password)
+        self.client_2.login(
+            username=user_manager.username,
+            password=self.password
+        )
 
     def test_manager_panel(self):
         # User without manager permission -> 403
         response = self.client_1.get(reverse('yourgrades:manager'))
         self.assertEqual(response.status_code, 403)
+
         # User with manager permission -> 200
         response = self.client_2.get(reverse('yourgrades:manager'))
         self.assertEqual(response.status_code, 200)
@@ -537,43 +658,57 @@ class CreateSchoolClassViewTestCase(TestCase):
     def setUp(self):
         user = create_user(self.password)
         self.client_1 = Client()
-        self.client_1.login(username=user.username,
-                            password=self.password)
+        self.client_1.login(
+            username=user.username,
+            password=self.password
+        )
 
         user_manager = create_manager(self.password)
         self.client_2 = Client()
-        self.client_2.login(username=user_manager.username,
-                            password=self.password)
+        self.client_2.login(
+            username=user_manager.username,
+            password=self.password
+        )
 
     def test_create_school_class(self):
         # GET,user without manager permission -> 403
         response = self.client_1.get(reverse('yourgrades:create_school_class'))
         self.assertEqual(response.status_code, 403)
+
         # GET, user with manager permission -> 200
         response = self.client_2.get(reverse('yourgrades:create_school_class'))
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response,
-                                'yourgrades/managercreateschoolclass.html')
+        self.assertTemplateUsed(
+            response,
+            'yourgrades/managercreateschoolclass.html'
+        )
 
         # POST with wrong form data (or no form data) -> no redirection
         response = self.client_2.post(
             reverse('yourgrades:create_school_class'),
-            {'name': '2b', 'year': 2020, 'unique_code': 'wrong_code'})
+            {'name': '2b', 'year': 2020, 'unique_code': 'wrong_code'}
+        )
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response,
-                                'yourgrades/managercreateschoolclass.html')
+        self.assertTemplateUsed(
+            response,
+            'yourgrades/managercreateschoolclass.html'
+        )
+
         # POST, user with good permission and correct form
         # -> redirect to manager view
         form_data = {'name': '2b', 'year': 2020, 'unique_code': '2b2020'}
         self.assertTrue(SchoolClassForm(form_data).is_valid())
         response = self.client_2.post(
-            reverse('yourgrades:create_school_class'), form_data)
+            reverse('yourgrades:create_school_class'),
+            form_data
+        )
         self.assertEqual(response.status_code, 302)
         self.assertRedirects(response, '/yourgrades/manager')
         response = self.client_2.post(
             reverse('yourgrades:create_school_class'), form_data, follow=True)
         self.assertTemplateUsed(response,
                                 'yourgrades/managercreateschoolclass.html')
+
         # Check school class creation
         self.assertTrue(SchoolClass.objects.filter(unique_code='2b2020'))
 
@@ -602,6 +737,7 @@ class EditSchoolClassViewTestCase(TestCase):
             )
         )
         self.assertEqual(response.status_code, 403)
+
         # GET, user with manager permission -> 200
         response = self.client_2.get(
             reverse(
@@ -610,6 +746,7 @@ class EditSchoolClassViewTestCase(TestCase):
             )
         )
         self.assertEqual(response.status_code, 200)
+
         # POST with wrong form data (or no form data) -> no redirection
         response = self.client_2.post(
             reverse(
@@ -625,13 +762,19 @@ class EditSchoolClassViewTestCase(TestCase):
             }
         )
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response,
-                                'yourgrades/managereditschoolclass.html')
+        self.assertTemplateUsed(
+            response,
+            'yourgrades/managereditschoolclass.html'
+        )
+
         # POST, user with good permission and correct form
         # -> redirect view to itself
-        form_data = {'name': 'Jan', 'surname': 'Kowalski',
-                     'birthday': '2011-10-14', 'first_parent_name': 'Adam',
-                     'first_parent_surname': 'Kowalski'}
+        form_data = {
+            'name': 'Jan', 'surname': 'Kowalski',
+            'birthday': '2011-10-14',
+            'first_parent_name': 'Adam',
+            'first_parent_surname': 'Kowalski'
+        }
         self.assertTrue(CreateStudentForm(form_data).is_valid())
         response = self.client_2.post(
             reverse(
@@ -651,8 +794,10 @@ class EditSchoolClassViewTestCase(TestCase):
             form_data,
             follow=True
         )
-        self.assertTemplateUsed(response,
-                                'yourgrades/managereditschoolclass.html')
+        self.assertTemplateUsed(
+            response,
+            'yourgrades/managereditschoolclass.html'
+        )
         # Check student and parent creation
         self.assertTrue(Student.objects.filter(name='Jan', surname='Kowalski'))
         self.assertTrue(Parent.objects.filter(name='Adam', surname='Kowalski'))
@@ -676,21 +821,34 @@ class DeactivationSchoolClassViewTestCase(TestCase):
     def test_deactivation_school_class(self):
         # GET,user without manager permission -> 403
         response = self.client_1.get(
-            reverse('yourgrades:deactivation_school_class',
-                    kwargs={'class_unique_code': '2d2020'}))
+            reverse(
+                'yourgrades:deactivation_school_class',
+                kwargs={'class_unique_code': '2d2020'}
+            )
+        )
         self.assertEqual(response.status_code, 403)
+
         # GET, user with permission -> 405
         response = self.client_2.get(
-            reverse('yourgrades:deactivation_school_class',
-                    kwargs={'class_unique_code': '2d2020'}))
+            reverse(
+                    'yourgrades:deactivation_school_class',
+                    kwargs={'class_unique_code': '2d2020'}
+            )
+        )
         self.assertEqual(response.status_code, 405)
+
         # POST, user with good permission redirect to edit_school_class view
         response = self.client_2.post(
-            reverse('yourgrades:deactivation_school_class',
-                    kwargs={'class_unique_code': '2d2020'}))
+            reverse(
+                'yourgrades:deactivation_school_class',
+                kwargs={'class_unique_code': '2d2020'}
+            )
+        )
         self.assertEqual(response.status_code, 302)
-        self.assertRedirects(response,
-                             '/yourgrades/manager/editschoolclass/2d2020')
+        self.assertRedirects(
+            response,
+            '/yourgrades/manager/editschoolclass/2d2020'
+        )
         # Check class deactivation
         school_class = SchoolClass.objects.get(unique_code='2d2020')
         self.assertEqual(school_class.active, False)
@@ -720,6 +878,7 @@ class DeactivationTeacherViewTestCase(TestCase):
             )
         )
         self.assertEqual(response.status_code, 403)
+
         # GET, user with good permission redirect to manager panel view
         response = self.client_2.get(
             reverse(
@@ -729,6 +888,7 @@ class DeactivationTeacherViewTestCase(TestCase):
         )
         self.assertEqual(response.status_code, 302)
         self.assertRedirects(response, '/yourgrades/manager')
+
         # Check class deactivation
         teacher = Teacher.objects.get(user__id=self.teacher.user.id)
         self.assertEqual(teacher.active, False)
@@ -740,15 +900,23 @@ class ActivationSchoolClassViewTestCase(TestCase):
     def setUp(self):
         user = create_user(self.password)
         self.client_1 = Client()
-        self.client_1.login(username=user.username,
-                            password=self.password)
+        self.client_1.login(
+            username=user.username,
+            password=self.password
+        )
 
         user_manager = create_manager(self.password)
         self.client_2 = Client()
-        self.client_2.login(username=user_manager.username,
-                            password=self.password)
-        SchoolClass.objects.create(name='2e', year=2020, unique_code='2e2020',
-                                   active=False)
+        self.client_2.login(
+            username=user_manager.username,
+            password=self.password
+        )
+        SchoolClass.objects.create(
+            name='2e',
+            year=2020,
+            unique_code='2e2020',
+            active=False
+        )
 
     def test_activation_school_class(self):
         # GET,user without manager permission -> 403
@@ -756,18 +924,28 @@ class ActivationSchoolClassViewTestCase(TestCase):
             reverse('yourgrades:activation_school_class',
                     kwargs={'class_unique_code': '2e2020'}))
         self.assertEqual(response.status_code, 403)
+
         # GET, user with permission -> 405
         response = self.client_2.get(
             reverse('yourgrades:activation_school_class',
-                    kwargs={'class_unique_code': '2e2020'}))
+                kwargs={'class_unique_code': '2e2020'}
+            )
+        )
         self.assertEqual(response.status_code, 405)
+
         # POST, user with good permission redirect to edit_school_class view
         response = self.client_2.post(
-            reverse('yourgrades:activation_school_class',
-                    kwargs={'class_unique_code': '2e2020'}))
+            reverse(
+                'yourgrades:activation_school_class',
+                kwargs={'class_unique_code': '2e2020'}
+            )
+        )
         self.assertEqual(response.status_code, 302)
-        self.assertRedirects(response,
-                             '/yourgrades/manager/editschoolclass/2e2020')
+        self.assertRedirects(
+            response,
+            '/yourgrades/manager/editschoolclass/2e2020'
+        )
+
         # Check class activation
         school_class = SchoolClass.objects.get(unique_code='2e2020')
         self.assertEqual(school_class.active, True)
@@ -793,6 +971,7 @@ class DeleteStudentViewTestCase(TestCase):
         response = self.client_1.get(reverse('yourgrades:del_student', kwargs={
             'user_id': self.parent.student.user.id}))
         self.assertEqual(response.status_code, 403)
+
         # GET, user with manager permission
         # -> redirect to edit_school_class view
         response = self.client_2.get(reverse('yourgrades:del_student', kwargs={
@@ -803,6 +982,7 @@ class DeleteStudentViewTestCase(TestCase):
             '/yourgrades/manager/editschoolclass/' +
             self.parent.student.school_class.unique_code
         )
+
         # Check student deletion
         self.assertFalse(
             Student.objects.filter(user__id=self.parent.student.user.id))
@@ -826,6 +1006,7 @@ class AddTeacherViewTestCase(TestCase):
         # GET,user without manager permission -> 403
         response = self.client_1.get(reverse('yourgrades:add_teacher'))
         self.assertEqual(response.status_code, 403)
+
         # GET, user with manager permission -> 200
         response = self.client_2.get(reverse('yourgrades:add_teacher'))
         self.assertEqual(response.status_code, 200)
@@ -836,16 +1017,22 @@ class AddTeacherViewTestCase(TestCase):
             reverse('yourgrades:add_teacher'), {'name': '', 'surname': ''})
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'yourgrades/manageraddteacher.html')
+
         # POST, user with good permission and correct form
         # -> redirect to manager view
         form_data = {'name': 'Anna', 'surname': 'Malinowska'}
         self.assertTrue(CreateTeacherForm(form_data).is_valid())
         response = self.client_2.post(
-            reverse('yourgrades:add_teacher'), form_data)
+            reverse('yourgrades:add_teacher'),
+            form_data
+        )
         self.assertEqual(response.status_code, 302)
         self.assertRedirects(response, '/yourgrades/manager')
         response = self.client_2.post(
-            reverse('yourgrades:add_teacher'), form_data, follow=True)
+            reverse('yourgrades:add_teacher'),
+            form_data,
+            follow=True
+        )
         self.assertTemplateUsed(response, 'yourgrades/manager.html')
 
 
@@ -862,8 +1049,11 @@ class AddSubjectViewTestCase(TestCase):
         self.client_2 = Client()
         self.client_2.login(username=user_manager.username,
                             password=self.password)
-        self.school_class = SchoolClass.objects.create(name='3a', year=2020,
-                                                       unique_code='3a2020')
+        self.school_class = SchoolClass.objects.create(
+            name='3a',
+            year=2020,
+            unique_code='3a2020'
+        )
         self.teacher = create_person('teacher', self.password)
 
     def test_add_teacher(self):
@@ -871,6 +1061,7 @@ class AddSubjectViewTestCase(TestCase):
         response = self.client_1.get(reverse('yourgrades:add_subject', kwargs={
             'class_unique_code': self.school_class.unique_code}))
         self.assertEqual(response.status_code, 403)
+
         # GET, user with manager permission -> 200
         response = self.client_2.get(reverse('yourgrades:add_subject', kwargs={
             'class_unique_code': self.school_class.unique_code}))
@@ -887,6 +1078,7 @@ class AddSubjectViewTestCase(TestCase):
         )
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'yourgrades/manageraddsubject.html')
+
         # POST, user with good permission and correct form
         # -> redirect to edit_school_class view
         form_data = {'name': 'Physics', 'shortcut': 'Ph',}
@@ -899,13 +1091,19 @@ class AddSubjectViewTestCase(TestCase):
             form_data
         )
         self.assertEqual(response.status_code, 302)
-        self.assertRedirects(response, '/yourgrades/manager/editschoolclass/' +
-                             self.school_class.unique_code)
+        self.assertRedirects(
+            response, 
+            '/yourgrades/manager/editschoolclass/' +
+                self.school_class.unique_code
+        )
+
         # Check Subject and Subject_teacher objects creation
         self.assertTrue(Subject.objects.filter(name='Physics'))
         subject = Subject.objects.get(name='Physics')
-        self.assertEqual(subject.unique_code,
-                         form_data['shortcut'] + self.school_class.unique_code)
+        self.assertEqual(
+            subject.unique_code,
+            form_data['shortcut'] + self.school_class.unique_code
+        )
 
 
 class ManagerSubjectViewTestCase(TestCase):
@@ -914,18 +1112,27 @@ class ManagerSubjectViewTestCase(TestCase):
     def setUp(self):
         user = create_user(self.password)
         self.client_1 = Client()
-        self.client_1.login(username=user.username,
-                            password=self.password)
+        self.client_1.login(
+            username=user.username,
+            password=self.password
+        )
 
         user_manager = create_manager(self.password)
         self.client_2 = Client()
-        self.client_2.login(username=user_manager.username,
-                            password=self.password)
-        self.school_class = SchoolClass.objects.create(name='3b', year=2020,
-                                                       unique_code='3b2020')
-        self.subject = Subject.objects.create(name='History',
-                                              unique_code='Hi3b2020',
-                                              school_class=self.school_class)
+        self.client_2.login(
+            username=user_manager.username,
+            password=self.password
+        )
+        self.school_class = SchoolClass.objects.create(
+            name='3b',
+            year=2020,
+            unique_code='3b2020'
+        )
+        self.subject = Subject.objects.create(
+            name='History',
+            unique_code='Hi3b2020',
+            school_class=self.school_class
+        )
 
     def test_manager_subject(self):
         # GET,user without manager permission -> 403
@@ -950,8 +1157,10 @@ class ManagerSubjectViewTestCase(TestCase):
             )
         )
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response,
-                                'yourgrades/managersubjectpanel.html')
+        self.assertTemplateUsed(
+            response,
+            'yourgrades/managersubjectpanel.html'
+        )
         # Check created context:
         self.assertEqual(response.context['subject'], self.subject)
         self.assertEqual(response.context['class'], self.school_class)
@@ -1012,6 +1221,7 @@ class DeleteSubjectDateViewTestCase(TestCase):
             )
         )
         self.assertEqual(response.status_code, 403)
+
         # GET, user with manager permission -> redirection subject_view
         response = self.client_2.get(
             reverse(
@@ -1045,6 +1255,7 @@ class TimetableViewTestCase(TestCase):
         self.client_2 = Client()
         self.client_2.login(username=self.teacher.user.username,
                             password=self.password)
+
         self.student = create_person('student', self.password)
         self.client_3 = Client()
         self.client_3.login(username=self.student.user.username,
@@ -1102,6 +1313,7 @@ class ManagerStudentViewTestCase(TestCase):
             )
         )
         self.assertEqual(response.status_code, 403)
+
         # GET, user with manager permission -> 200
         response = self.client_2.get(
             reverse(
@@ -1111,6 +1323,7 @@ class ManagerStudentViewTestCase(TestCase):
         )
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'yourgrades/managerstudent.html')
+
         # POST with wrong form data (or no form data) -> no redirection
         response = self.client_2.post(
             reverse(
@@ -1121,6 +1334,7 @@ class ManagerStudentViewTestCase(TestCase):
         )
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'yourgrades/managerstudent.html')
+
         # POST, user with good permission and correct form
         # -> redirect view to itself
         response = self.client_2.post(
@@ -1133,9 +1347,12 @@ class ManagerStudentViewTestCase(TestCase):
         self.assertEqual(response.status_code, 302)
         self.assertRedirects(response, '/yourgrades/manager/student/' + str(
             self.parent.student.user.id))
+
         # Checking Grades model object
-        self.assertTrue(Grades.objects.filter(subject=self.subject,
-                                              student=self.parent.student))
+        self.assertTrue(Grades.objects.filter(
+            subject=self.subject,
+            student=self.parent.student)
+        )
 
 
 class ManagerGradesHistoryViewTestCasee(TestCase):
@@ -1144,18 +1361,23 @@ class ManagerGradesHistoryViewTestCasee(TestCase):
     def setUp(self):
         user = create_user(self.password)
         self.client_1 = Client()
-        self.client_1.login(username=user.username,
-                            password=self.password)
+        self.client_1.login(
+            username=user.username,
+            password=self.password
+        )
 
         user_manager = create_manager(self.password)
         self.client_2 = Client()
-        self.client_2.login(username=user_manager.username,
-                            password=self.password)
+        self.client_2.login(
+            username=user_manager.username,
+            password=self.password
+        )
 
     def test_delete_student(self):
         # GET,user without manager permission -> 403
         response = self.client_1.get(reverse('yourgrades:manager_history'))
         self.assertEqual(response.status_code, 403)
+
         # GET, user with manager permission -> 200
         response = self.client_2.get(reverse('yourgrades:manager_history'))
         self.assertEqual(response.status_code, 200)
@@ -1168,18 +1390,27 @@ class DeleteSubjectViewTestCase(TestCase):
     def setUp(self):
         user = create_user(self.password)
         self.client_1 = Client()
-        self.client_1.login(username=user.username,
-                            password=self.password)
+        self.client_1.login(
+            username=user.username,
+            password=self.password
+        )
 
         user_manager = create_manager(self.password)
         self.client_2 = Client()
-        self.client_2.login(username=user_manager.username,
-                            password=self.password)
-        self.school_class = SchoolClass.objects.create(name='4a', year=2020,
-                                                       unique_code='4a2020')
-        self.subject = Subject.objects.create(name='Gym',
-                                              unique_code='Gy4a2020',
-                                              school_class=self.school_class)
+        self.client_2.login(
+            username=user_manager.username,
+            password=self.password
+        )
+        self.school_class = SchoolClass.objects.create(
+            name='4a',
+            year=2020,
+            unique_code='4a2020'
+        )
+        self.subject = Subject.objects.create(
+            name='Gym',
+            unique_code='Gy4a2020',
+            school_class=self.school_class
+        )
 
     def test_delete_student(self):
         # GET,user without manager permission -> 403
@@ -1193,6 +1424,7 @@ class DeleteSubjectViewTestCase(TestCase):
             )
         )
         self.assertEqual(response.status_code, 403)
+
         # GET, user with manager permission
         # -> redirect to edit_school_class view
         response = self.client_2.get(
@@ -1205,8 +1437,11 @@ class DeleteSubjectViewTestCase(TestCase):
             )
         )
         self.assertEqual(response.status_code, 302)
-        self.assertRedirects(response, '/yourgrades/manager/editschoolclass/' +
-                             str(self.school_class.unique_code))
+        self.assertRedirects(
+            response,
+            '/yourgrades/manager/editschoolclass/' +
+                str(self.school_class.unique_code)
+        )
 
 
 class DeleteSubjectTeacherViewTestCase(TestCase):
@@ -1250,6 +1485,7 @@ class DeleteSubjectTeacherViewTestCase(TestCase):
             )
         )
         self.assertEqual(response.status_code, 403)
+
         # GET, user with manager permission
         # -> redirect to edit_school_class view
         response = self.client_2.get(
@@ -1298,6 +1534,7 @@ class ManagerDeleteTeacherViewTestCase(TestCase):
             )
         )
         self.assertEqual(response.status_code, 403)
+
         # GET, user with manager permission -> redirect to manager view
         response = self.client_2.get(
             reverse(
@@ -1348,6 +1585,7 @@ class ManagerResetUserViewTestCase(TestCase):
             )
         )
         self.assertEqual(response.status_code, 403)
+
         # GET, user with manager permission -> redirect to manager view
         response = self.client_2.get(
             reverse(
@@ -1406,6 +1644,7 @@ class ManagerTeacherEditViewTestCase(TestCase):
             )
         )
         self.assertEqual(response.status_code, 403)
+
         # GET, user with manager permission -> 200
         response = self.client_2.get(
             reverse(
@@ -1426,6 +1665,7 @@ class ManagerTeacherEditViewTestCase(TestCase):
         )
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'yourgrades/managereditteacher.html')
+
         # POST, user with good permission and correct form
         # -> redirect to manager view
         form_data = {'name': 'Somename', 'surname': 'Somesurname'}
@@ -1444,9 +1684,11 @@ class ManagerTeacherEditViewTestCase(TestCase):
             reverse(
                 'yourgrades:manager_teacher_edit',
                 kwargs={'user_id': self.teacher.user.id}
-            ), follow=True
+            ),
+            follow=True
         )
         self.assertTemplateUsed(response, 'yourgrades/managereditteacher.html')
+
         # Checking Teacher objects change
         self.assertTrue(
             Teacher.objects.filter(name='Somename', surname='Somesurname'))
@@ -1487,10 +1729,13 @@ class ManagerStudentEditViewTestCse(TestCase):
         self.assertTemplateUsed(response, 'yourgrades/managereditstudent.html')
         # POST, user with good permission and correct form
         # -> redirect to manager_student view
-        form_data = {'name': 'Somename', 'surname': 'Somesurname',
-                     'birthday': '2010-02-24',
-                     'first_parent_name': 'Othername',
-                     'first_parent_surname': 'Othersurname'}
+        form_data = {
+            'name': 'Somename',
+            'surname': 'Somesurname',
+            'birthday': '2010-02-24',
+            'first_parent_name': 'Othername',
+            'first_parent_surname': 'Othersurname'
+        }
         self.assertTrue(CreateStudentForm(form_data).is_valid())
         response = self.client_2.post(
             reverse(
@@ -1510,18 +1755,27 @@ class AddSubjectTeacherViewTestCase(TestCase):
     def setUp(self):
         user = create_user(self.password)
         self.client_1 = Client()
-        self.client_1.login(username=user.username,
-                            password=self.password)
+        self.client_1.login(
+            username=user.username,
+            password=self.password
+        )
 
         user_manager = create_manager(self.password)
         self.client_2 = Client()
-        self.client_2.login(username=user_manager.username,
-                            password=self.password)
-        self.school_class = SchoolClass.objects.create(name='4a', year=2020,
-                                                       unique_code='4a2020')
-        self.subject = Subject.objects.create(name='History',
-                                              unique_code='Hi4a2020',
-                                              school_class=self.school_class)
+        self.client_2.login(
+            username=user_manager.username,
+            password=self.password
+        )
+        self.school_class = SchoolClass.objects.create(
+            name='4a',
+            year=2020,
+            unique_code='4a2020'
+        )
+        self.subject = Subject.objects.create(
+            name='History',
+            unique_code='Hi4a2020',
+            school_class=self.school_class
+        )
         self.teacher = create_person('teacher', self.password)
 
     def test_add_subject_teacher(self):
@@ -1547,8 +1801,10 @@ class AddSubjectTeacherViewTestCase(TestCase):
             )
         )
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response,
-                                'yourgrades/manageraddsubjectteacher.html')
+        self.assertTemplateUsed(
+            response,
+            'yourgrades/manageraddsubjectteacher.html'
+        )
 
 
 class ManagerTeacherViewTestCase(TestCase):
@@ -1611,10 +1867,12 @@ class TeacherPanelViewTestCase(TestCase):
         # GET,user without teacher permission -> 403
         response = self.client_1.get(reverse('yourgrades:teacher'))
         self.assertEqual(response.status_code, 403)
+
         # GET, user with teacher permission and first_login = False -> 200
         response = self.client_2.get(reverse('yourgrades:teacher'))
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'yourgrades/teacher.html')
+
         # GET, user with teacher permission and first_login = True
         # -> redirect to first_login view
         response = self.client_3.get(reverse('yourgrades:teacher'))

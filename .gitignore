@@ -1,2 +1,3 @@
 venv
 gradebook/.env
+**/__pycache__
