@@ -14,11 +14,15 @@ class SchoolClass(models.Model):
         help_text='Format: nazwa klasy(cyfra zmałą literą) łącznie z rokiem' +
                   ' zakończenia nauki - np: 1b2019'
     )
-    name = models.CharField(max_length=2,
-                            help_text='Cyfra i mała litera bez spacji.')
+    name = models.CharField(
+        max_length=2,
+        help_text='Cyfra i mała litera bez spacji.'
+    )
     year = models.IntegerField(
-        validators=[MinValueValidator(1800), MaxValueValidator(9999)],
-        help_text='Rok zakończenia nauki w formacie czterocyfrowym')
+        validators=[MinValueValidator(1800),
+        MaxValueValidator(9999)],
+        help_text='Rok zakończenia nauki w formacie czterocyfrowym'
+    )
     active = models.BooleanField(default=True)
 
     def __str__(self):
@@ -26,8 +30,11 @@ class SchoolClass(models.Model):
 
 
 class PersonalData(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE,
-                                primary_key=True)
+    user = models.OneToOneField(
+        User,
+        on_delete=models.CASCADE,
+        primary_key=True
+    )
     name = models.CharField(max_length=64)
     surname = models.CharField(max_length=64)
     first_login = models.BooleanField(default=True)
@@ -102,7 +109,8 @@ class SubjectDate(models.Model):
     day = models.CharField(max_length=2, choices=DAYS)
     lesson_number = models.IntegerField(
         validators=[MaxValueValidator(12), MinValueValidator(1)],
-        choices=LESSONS)
+        choices=LESSONS
+    )
 
 
 class SubjectTeachers(models.Model):

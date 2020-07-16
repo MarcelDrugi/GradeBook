@@ -21,7 +21,8 @@ class BaseView(TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         unread = MailboxReceived.objects.filter(
-            recipient__user=self.request.user, read=False
+            recipient__user=self.request.user,
+            read=False
         )
         context['unread'] = len(unread)
         try:
@@ -59,16 +60,23 @@ class HomepageView(FormView):
             User.objects.get(username=form.cleaned_data['username'])
         except User.DoesNotExist:
             # User doesnt exist
-            return render(self.request, 'yourgrades/homepage.html',
-                          {'form': form, 'user_no_exist': True})
-        user = authenticate(username=form.cleaned_data['username'],
-                            password=form.cleaned_data['password'])
+            return render(
+                self.request, 'yourgrades/homepage.html',
+                {'form': form, 'user_no_exist': True}
+            )
+        user = authenticate(
+            username=form.cleaned_data['username'],
+            password=form.cleaned_data['password']
+        )
         if user is not None:
             login(self.request, user)
         else:
             # Wrong password
-            return render(self.request, 'yourgrades/homepage.html',
-                          {'form': form, 'wrong_password': True})
+            return render(
+                self.request,
+                'yourgrades/homepage.html',
+                {'form': form, 'wrong_password': True}
+            )
         self.request.session[
             'user'] = self.request.user.first_name +\
                       ' ' + self.request.user.last_name
@@ -237,9 +245,12 @@ class EditSchoolClassView(LoginRequiredMixin, UserPassesTestMixin,
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['students'] = Student.objects.filter(
-            school_class__unique_code=self.kwargs['class_unique_code']).order_by('surname')
-        school_class = get_object_or_404(SchoolClass, unique_code=self.kwargs[
-            'class_unique_code'])
+            school_class__unique_code=self.kwargs['class_unique_code']
+        ).order_by('surname')
+        school_class = get_object_or_404(
+            SchoolClass,
+            unique_code=self.kwargs['class_unique_code']
+        )
         context['current_class'] = school_class
         context['subjects'] = Subject.objects.filter(school_class=school_class)
         return context
@@ -271,8 +282,10 @@ class EditSchoolClassView(LoginRequiredMixin, UserPassesTestMixin,
 
         username = form.cleaned_data[name] + form.cleaned_data[surname]
         if not User.objects.filter(username=username).exists():
-            user = User.objects.create_user(username=username,
-                                            password=username + prefix)
+            user = User.objects.create_user(
+                username=username,
+                password=username + prefix
+            )
         else:
             numbering = 2
             while True:
@@ -287,8 +300,10 @@ class EditSchoolClassView(LoginRequiredMixin, UserPassesTestMixin,
                     numbering += 1
         # Add permission
         content_type = ContentType.objects.get_for_model(RightsSupport)
-        permission = Permission.objects.get(content_type=content_type,
-                                            codename=permission_codename)
+        permission = Permission.objects.get(
+            content_type=content_type,
+            codename=permission_codename
+        )
         user.user_permissions.add(permission)
         user.first_name = form.cleaned_data[name]
         user.last_name = form.cleaned_data[surname]
@@ -311,10 +326,12 @@ class EditSchoolClassView(LoginRequiredMixin, UserPassesTestMixin,
         student.save()
         user = self.create_gradebook_user(form, 'parent1')
         user.save()
-        parent1 = Parent(user=user,
-                         name=form.cleaned_data['first_parent_name'],
-                         surname=form.cleaned_data['first_parent_surname'],
-                         student=student)
+        parent1 = Parent(
+            user=user,
+            name=form.cleaned_data['first_parent_name'],
+            surname=form.cleaned_data['first_parent_surname'],
+            student=student
+        )
         parent1.save()
         if not form.cleaned_data['second_parent_name'] or not \
                 form.cleaned_data['second_parent_surname']:
@@ -322,11 +339,12 @@ class EditSchoolClassView(LoginRequiredMixin, UserPassesTestMixin,
         else:
             user = self.create_gradebook_user(form, 'parent2')
             user.save()
-            parent2 = Parent(user=user,
-                             name=form.cleaned_data['second_parent_name'],
-                             surname=form.cleaned_data[
-                                 'second_parent_surname'],
-                             student=student)
+            parent2 = Parent(
+                user=user,
+                name=form.cleaned_data['second_parent_name'],
+                surname=form.cleaned_data['second_parent_surname'],
+                student=student
+            )
             parent2.save()
             return super().form_valid(form)
 
@@ -337,8 +355,10 @@ class DeactivationSchoolClassView(LoginRequiredMixin, UserPassesTestMixin,
         return self.request.user.has_perm('yourgrades.manager')
 
     def post(self, request, **kwargs):
-        current_class = get_object_or_404(SchoolClass, unique_code=kwargs[
-            'class_unique_code'])
+        current_class = get_object_or_404(
+            SchoolClass,
+            unique_code=kwargs['class_unique_code']
+        )
         current_class.active = False
         current_class.save()
         return HttpResponseRedirect(
@@ -355,8 +375,10 @@ class DeactivationTeacherView(LoginRequiredMixin, UserPassesTestMixin, View):
         return self.request.user.has_perm('yourgrades.manager')
 
     def get(self, request, **kwargs):
-        teacher = get_object_or_404(Teacher,
-                                    user__id=kwargs['teacher_user_id'])
+        teacher = get_object_or_404(
+            Teacher,
+            user__id=kwargs['teacher_user_id']
+        )
         teacher.active = False
         teacher.save()
         return HttpResponseRedirect(reverse('yourgrades:manager'))
@@ -367,8 +389,10 @@ class ActivationSchoolClassView(LoginRequiredMixin, UserPassesTestMixin, View):
         return self.request.user.has_perm('yourgrades.manager')
 
     def post(self, request, **kwargs):
-        current_class = get_object_or_404(SchoolClass, unique_code=kwargs[
-            'class_unique_code'])
+        current_class = get_object_or_404(
+            SchoolClass,
+            unique_code=kwargs['class_unique_code']
+        )
         current_class.active = True
         current_class.save()
         return HttpResponseRedirect(
@@ -384,8 +408,10 @@ class ActivationTeacherView(LoginRequiredMixin, UserPassesTestMixin, View):
         return self.request.user.has_perm('yourgrades.manager')
 
     def get(self, request, **kwargs):
-        teacher = get_object_or_404(Teacher,
-                                    user__id=kwargs['teacher_user_id'])
+        teacher = get_object_or_404(
+            Teacher,
+            user__id=kwargs['teacher_user_id']
+        )
         teacher.active = True
         teacher.save()
         return HttpResponseRedirect(reverse('yourgrades:manager'))
@@ -433,11 +459,15 @@ class AddTeacherView(LoginRequiredMixin, UserPassesTestMixin, ProcessFormView,
         # Method is called only when data is valid
         username = form.cleaned_data['name'] + form.cleaned_data['surname']
         if not User.objects.filter(username=username).exists():
-            user = User.objects.create_user(username=username,
-                                            password=username + '234')
+            user = User.objects.create_user(
+                username=username,
+                password=username + '234'
+            )
             content_type = ContentType.objects.get_for_model(RightsSupport)
-            permission = Permission.objects.get(content_type=content_type,
-                                                codename='teacher')
+            permission = Permission.objects.get(
+                content_type=content_type,
+                codename='teacher'
+            )
             user.user_permissions.add(permission)
         else:
             numbering = 2
@@ -449,10 +479,12 @@ class AddTeacherView(LoginRequiredMixin, UserPassesTestMixin, ProcessFormView,
                         password=new_username + '123'
                     )
                     content_type = ContentType.objects.get_for_model(
-                        RightsSupport)
+                        RightsSupport
+                    )
                     permission = Permission.objects.get(
                         content_type=content_type,
-                        codename='teacher')
+                        codename='teacher'
+                    )
                     user.user_permissions.add(permission)
                     break
                 else:
@@ -478,8 +510,10 @@ class AddSubjectView(LoginRequiredMixin, UserPassesTestMixin, ProcessFormView,
         return self.request.user.has_perm('yourgrades.manager')
 
     def get_success_url(self):
-        return reverse('yourgrades:edit_school_class', kwargs={
-            'class_unique_code': self.kwargs['class_unique_code']})
+        return reverse(
+            'yourgrades:edit_school_class', 
+            kwargs={'class_unique_code': self.kwargs['class_unique_code']}
+        )
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -495,16 +529,20 @@ class AddSubjectView(LoginRequiredMixin, UserPassesTestMixin, ProcessFormView,
                 name=form.cleaned_data['name'],
                 unique_code=form.cleaned_data['shortcut'] + self.kwargs[
                     'class_unique_code'],
-                school_class=SchoolClass.objects.get(unique_code=self.kwargs[
-                    'class_unique_code'])
+                school_class=SchoolClass.objects.get(
+                    unique_code=self.kwargs['class_unique_code']
+                )
             )
             subject.save()
         except IntegrityError:
             context = self.get_context_data()
             context['form'] = form
             context['shortcut_error'] = True
-            return render(self.request, 'yourgrades/manageraddsubject.html',
-                          context)
+            return render(
+                self.request,
+                'yourgrades/manageraddsubject.html',
+                context
+            )
         try:
             subject_teachers = SubjectTeachers(subject=subject)
             subject_teachers.save()
@@ -557,17 +595,23 @@ class ManagerSubjectView(LoginRequiredMixin, UserPassesTestMixin,
             context['teachers'] = subject_teachers.teacher.all()
         except SubjectTeachers.DoesNotExist:
             context['teachers'] = None
-        grades = Grades.objects.filter(subject=subject,
-                                       manager_mode=False).order_by('date')
-        manager_grades = Grades.objects.filter(subject=subject,
-                                               manager_mode=True).order_by(
-            'date')
+        grades = Grades.objects.filter(
+            subject=subject,
+            manager_mode=False
+        ).order_by('date')
+        manager_grades = Grades.objects.filter(
+            subject=subject,
+            manager_mode=True
+        ).order_by('date')
         manager_canceled_grades = CanceledGrades.objects.filter(
-            subject=subject).order_by('date')
+            subject=subject
+        ).order_by('date')
         paginator_grades = Paginator(grades, 10)
         paginator_manager_grades = Paginator(manager_grades, 10)
-        paginator_manager_canceled_grades = Paginator(manager_canceled_grades,
-                                                      10)
+        paginator_manager_canceled_grades = Paginator(
+            manager_canceled_grades,
+            10
+        )
         context['grades'] = paginator_grades.get_page(
             self.request.GET.get('page1'))
         context['manager_grades'] = paginator_manager_grades.get_page(
@@ -581,17 +625,18 @@ class ManagerSubjectView(LoginRequiredMixin, UserPassesTestMixin,
 
     def form_valid(self, form):
         try:
-            SubjectDate.objects.get(day=form.cleaned_data['day'],
-                                    lesson_number=form.cleaned_data[
-                                        'lesson_number'],
-                                    subject__unique_code=self.kwargs[
-                                        'subject_unique_code'])
+            SubjectDate.objects.get(
+                day=form.cleaned_data['day'],
+                lesson_number=form.cleaned_data['lesson_number'],
+                subject__unique_code=self.kwargs['subject_unique_code']
+            )
             return self.render_to_response(
                 self.get_context_data(form=form, exist=True))
         except SubjectDate.DoesNotExist:
             subject_date = form.save(commit=False)
-            subject = get_object_or_404(Subject, unique_code=self.kwargs[
-                'subject_unique_code'])
+            subject = get_object_or_404(
+                Subject, unique_code=self.kwargs['subject_unique_code']
+            )
             subject_date.subject = subject
             subject_date.save()
         return super().form_valid(form)
@@ -637,8 +682,10 @@ class TimetableView(LoginRequiredMixin, UserPassesTestMixin, BaseView):
             try:
                 student = Student.objects.get(user=self.request.user)
             except Student.DoesNotExist:
-                student = get_list_or_404(Parent, user=self.request.user)[
-                    0].student
+                student = get_list_or_404(
+                    Parent,
+                    user=self.request.user
+                )[0].student
             subjects = Subject.objects.filter(
                 school_class=student.school_class)
 
@@ -655,6 +702,7 @@ class TimetableView(LoginRequiredMixin, UserPassesTestMixin, BaseView):
             all_subject_dates[subject] = SubjectDate.objects.filter(
                 subject=subject)
         dates = [[False for days in range(1, 7)] for lessons in range(1, 13)]
+
         for subject_dates in all_subject_dates.values():
             for subject_date in subject_dates:
                 iteration = -1
@@ -678,34 +726,45 @@ class ManagerStudentView(LoginRequiredMixin, UserPassesTestMixin,
         return self.request.user.has_perm('yourgrades.manager')
 
     def get_success_url(self):
-        return reverse('yourgrades:manager_student',
-                       kwargs={'user_id': self.kwargs['user_id']})
+        return reverse(
+            'yourgrades:manager_student',
+            kwargs={'user_id': self.kwargs['user_id']}
+        )
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        student = get_object_or_404(Student,
-                                    user__id=self.kwargs['user_id'])
+        student = get_object_or_404(
+            Student,
+            user__id=self.kwargs['user_id']
+        )
         context['student'] = student
         parents = Parent.objects.filter(student=student)
+
         parents_active = {}
         for parent in parents:
             if parent.first_login is True:
                 parents_active[parent] = parent.user.username
             else:
                 parents_active[parent] = None
+
         context['parents_active'] = parents_active
         subjects = Subject.objects.filter(
             school_class=student.school_class)
+
         subject_grades = {}
         for subject in subjects:
-            subject_grades[subject] = Grades.objects.filter(subject=subject,
-                                                            student=student)
+            subject_grades[subject] = Grades.objects.filter(
+                subject=subject,
+                student=student
+            )
         context['subject_grades'] = subject_grades
         context['invalid'] = self.get_second_form()
+
         try:
             context['del'] = self.kwargs['del']
         except KeyError:
             context['del'] = None
+
         return context
 
     def get_second_form(self):
@@ -722,10 +781,13 @@ class ManagerStudentView(LoginRequiredMixin, UserPassesTestMixin,
         if 'del_grade' in self.request.POST:
             grade = get_object_or_404(Grades,
                                       id=self.request.POST.get('del_grade'))
-            canceled_grade = CanceledGrades(weight=grade.weight,
-                                            grade=grade.grade, date=grade.date,
-                                            subject=grade.subject,
-                                            student=grade.student)
+            canceled_grade = CanceledGrades(
+                weight=grade.weight,
+                grade=grade.grade,
+                date=grade.date,
+                subject=grade.subject,
+                student=grade.student
+            )
             canceled_grade.save()
             message = Message(
                 subject='Grade canceled',
@@ -774,9 +836,11 @@ class ManagerStudentView(LoginRequiredMixin, UserPassesTestMixin,
             sender.save()
             recipient = Recipient(user=student.user, message=message)
             recipient.save()
-            mailbox_received = MailboxReceived(sender=sender,
-                                               recipient=recipient,
-                                               message=message)
+            mailbox_received = MailboxReceived(
+                sender=sender,
+                recipient=recipient,
+                message=message
+            )
             mailbox_received.save()
         except FieldError:
             raise Http404(
@@ -827,10 +891,15 @@ class DeleteSubjectTeacherView(LoginRequiredMixin, UserPassesTestMixin, View):
 
     def get(self, request, **kwargs):
         teacher = Teacher.objects.get(user__id=self.kwargs['teacher_user_id'])
-        subject = get_object_or_404(Subject, unique_code=self.kwargs[
-            'subject_unique_code'])
-        subject_teacher = get_object_or_404(SubjectTeachers, subject=subject,
-                                            teacher=teacher)
+        subject = get_object_or_404(
+            Subject,
+            unique_code=self.kwargs['subject_unique_code']
+        )
+        subject_teacher = get_object_or_404(
+            SubjectTeachers,
+            subject=subject,
+            teacher=teacher
+        )
         subject_teacher.teacher.remove(teacher)
         return HttpResponseRedirect(self.request.META.get('HTTP_REFERER'))
 
@@ -1006,18 +1075,22 @@ class AddSubjectTeacherView(LoginRequiredMixin, UserPassesTestMixin,
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['class'] = get_object_or_404(SchoolClass,
-                                             unique_code=self.kwargs[
-                                                 'class_unique_code'])
-        context['subject'] = get_object_or_404(Subject,
-                                               unique_code=self.kwargs[
-                                                   'subject_unique_code'])
+        context['class'] = get_object_or_404(
+            SchoolClass,
+            unique_code=self.kwargs['class_unique_code']
+        )
+        context['subject'] = get_object_or_404(
+            Subject,
+            unique_code=self.kwargs['subject_unique_code']
+        )
         return context
 
     def form_valid(self, form):
         # Method is called only when data is valid
-        subject = get_object_or_404(Subject, unique_code=self.kwargs[
-                    'subject_unique_code'])
+        subject = get_object_or_404(
+            Subject,
+            unique_code=self.kwargs['subject_unique_code']
+        )
         try:
             subject_teachers = SubjectTeachers.objects.get(subject=subject)
         except SubjectTeachers.DoesNotExist:
@@ -1037,8 +1110,10 @@ class ManagerTeacherView(LoginRequiredMixin, UserPassesTestMixin, BaseView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        teacher = get_object_or_404(Teacher,
-                                    user__id=kwargs['teacher_user_id'])
+        teacher = get_object_or_404(
+            Teacher,
+            user__id=kwargs['teacher_user_id']
+        )
         subject_teacher = SubjectTeachers.objects.filter(teacher=teacher)
         subjects = [subject.subject for subject in subject_teacher]
         context['subjects'] = subjects
@@ -1089,8 +1164,10 @@ class TeacherSubjectView(LoginRequiredMixin, UserPassesTestMixin,
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        subject = get_object_or_404(Subject, unique_code=self.kwargs[
-            'subject_unique_code'])
+        subject = get_object_or_404(
+            Subject,
+            unique_code=self.kwargs['subject_unique_code']
+        )
         context['subject'] = subject
         students = Student.objects.filter(
             school_class=subject.school_class).order_by('surname')
@@ -1099,17 +1176,22 @@ class TeacherSubjectView(LoginRequiredMixin, UserPassesTestMixin,
             for student in students]
         context['form2'] = self.get_second_form()[0]
         context['invalid_student'] = self.get_second_form()[1]
-        grades = Grades.objects.filter(subject=subject,
-                                       manager_mode=False).order_by('date')
-        manager_grades = Grades.objects.filter(subject=subject,
-                                               manager_mode=True).order_by(
-            'date')
+        grades = Grades.objects.filter(
+            subject=subject,
+            manager_mode=False
+        ).order_by('date')
+        manager_grades = Grades.objects.filter(
+            subject=subject,
+            manager_mode=True
+        ).order_by('date')
         manager_canceled_grades = CanceledGrades.objects.filter(
             subject=subject).order_by('date')
         paginator_grades = Paginator(grades, 10)
         paginator_manager_grades = Paginator(manager_grades, 10)
-        paginator_manager_canceled_grades = Paginator(manager_canceled_grades,
-                                                      10)
+        paginator_manager_canceled_grades = Paginator(
+            manager_canceled_grades,
+            10
+        )
         context['grades'] = paginator_grades.get_page(
             self.request.GET.get('page1'))
         context['manager_grades'] = paginator_manager_grades.get_page(
@@ -1124,9 +1206,10 @@ class TeacherSubjectView(LoginRequiredMixin, UserPassesTestMixin,
             current_form = AddGradeForm(self.request.POST)
             if not current_form.is_valid():
                 try:
-                    student = get_object_or_404(Student,
-                                                user__id=self.request.POST.get(
-                                                    'student'))
+                    student = get_object_or_404(
+                        Student,
+                        user__id=self.request.POST.get('student')
+                    )
                     return (current_form, student)
                 except KeyError:
                     return (None, None)
@@ -1139,8 +1222,10 @@ class TeacherSubjectView(LoginRequiredMixin, UserPassesTestMixin,
 
     def form_valid(self, form):
         # Method is called only when data is valid
-        subject = get_object_or_404(Subject, unique_code=self.kwargs[
-            'subject_unique_code'])
+        subject = get_object_or_404(
+            Subject,
+            unique_code=self.kwargs['subject_unique_code']
+        )
         student = get_object_or_404(
             Student,
             user__id=self.request.POST.get('student')
@@ -1165,9 +1250,11 @@ class TeacherSubjectView(LoginRequiredMixin, UserPassesTestMixin,
             sender.save()
             recipient = Recipient(user=student.user, message=message)
             recipient.save()
-            mailbox_received = MailboxReceived(sender=sender,
-                                               recipient=recipient,
-                                               message=message)
+            mailbox_received = MailboxReceived(
+                sender=sender,
+                recipient=recipient,
+                message=message
+            )
             mailbox_received.save()
         except FieldError:
             raise Http404(
@@ -1283,9 +1370,11 @@ class CreateMessageView(LoginRequiredMixin, UserPassesTestMixin,
                 recipient_name += ' parents'
             students = Student.objects.filter(school_class=school_class)
             if not students:
-                return self.render_to_response(
-                    self.get_context_data(form=form, no_students=True,
-                                          back=True))
+                return self.render_to_response(self.get_context_data(
+                    form=form,
+                    no_students=True,
+                    back=True
+                ))
             if not students:
                 raise Http404("Wrong class unique_code")
             for student in students:
@@ -1311,27 +1400,35 @@ class CreateMessageView(LoginRequiredMixin, UserPassesTestMixin,
                         )
                         mailbox_received.save()
         elif self.kwargs['prefix'] == 3:
-            subject = get_object_or_404(Subject,
-                                        unique_code=self.kwargs['code'])
+            subject = get_object_or_404(
+                Subject,
+                unique_code=self.kwargs['code']
+            )
             recipient_name = subject.name + ' teachers'
-            subject_teachers = get_object_or_404(SubjectTeachers,
-                                                 subject=subject)
+            subject_teachers = get_object_or_404(
+                SubjectTeachers,
+                subject=subject
+            )
             teachers = subject_teachers.teacher.all()
             for teacher in teachers:
                 recipient = Recipient(user=teacher.user, message=message)
                 recipient.save()
-                mailbox_received = MailboxReceived(sender=sender,
-                                                   recipient=recipient,
-                                                   message=message)
+                mailbox_received = MailboxReceived(
+                    sender=sender,
+                    recipient=recipient,
+                    message=message
+                )
                 mailbox_received.save()
         elif self.kwargs['prefix'] == 4:
             student = get_object_or_404(Student, user__id=self.kwargs['code'])
             recipient_name = student.__str__()
             recipient = Recipient(user=student.user, message=message)
             recipient.save()
-            mailbox_received = MailboxReceived(sender=sender,
-                                               recipient=recipient,
-                                               message=message)
+            mailbox_received = MailboxReceived(
+                sender=sender,
+                recipient=recipient,
+                message=message
+            )
             mailbox_received.save()
         elif self.kwargs['prefix'] == 5:
             student = get_object_or_404(Student, user__id=self.kwargs['code'])
@@ -1340,9 +1437,11 @@ class CreateMessageView(LoginRequiredMixin, UserPassesTestMixin,
             for parent in parents:
                 recipient = Recipient(user=parent.user, message=message)
                 recipient.save()
-                mailbox_received = MailboxReceived(sender=sender,
-                                                   recipient=recipient,
-                                                   message=message)
+                mailbox_received = MailboxReceived(
+                    sender=sender,
+                    recipient=recipient,
+                    message=message
+                )
                 mailbox_received.save()
         elif self.kwargs['prefix'] == 6:
             permission = Permission.objects.get(codename='manager')
@@ -1351,22 +1450,29 @@ class CreateMessageView(LoginRequiredMixin, UserPassesTestMixin,
             for manager in managers:
                 recipient = Recipient(user=manager, message=message)
                 recipient.save()
-                mailbox_received = MailboxReceived(sender=sender,
-                                                   recipient=recipient,
-                                                   message=message)
+                mailbox_received = MailboxReceived(
+                    sender=sender,
+                    recipient=recipient,
+                    message=message
+                )
                 mailbox_received.save()
         elif self.kwargs['prefix'] == 7:
             teacher = get_object_or_404(Teacher, user__id=self.kwargs['code'])
             recipient_name = teacher.__str__()
             recipient = Recipient(user=teacher.user, message=message)
             recipient.save()
-            mailbox_received = MailboxReceived(sender=sender,
-                                               recipient=recipient,
-                                               message=message)
+            mailbox_received = MailboxReceived(
+                sender=sender,
+                recipient=recipient,
+                message=message
+            )
             mailbox_received.save()
         # Same for all type of senders
-        mailbox_sent = MailboxSent(sender=sender, recipient=recipient_name,
-                                   message=message)
+        mailbox_sent = MailboxSent(
+            sender=sender,
+            recipient=recipient_name,
+            message=message
+        )
         mailbox_sent.save()
         return super().form_valid(form)
 
@@ -1420,14 +1526,18 @@ class MailTextView(LoginRequiredMixin, UserPassesTestMixin, BaseView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         if self.kwargs['mailbox_type'] == 1:
-            mailbox = get_object_or_404(MailboxReceived,
-                                        id=self.kwargs['mailbox_id'])
+            mailbox = get_object_or_404(
+                MailboxReceived,
+                id=self.kwargs['mailbox_id']
+            )
             context['mailbox'] = mailbox
             mailbox.read = True
             mailbox.save()
         elif self.kwargs['mailbox_type'] == 2:
-            mailbox = get_object_or_404(MailboxSent,
-                                        id=self.kwargs['mailbox_id'])
+            mailbox = get_object_or_404(
+                MailboxSent,
+                id=self.kwargs['mailbox_id']
+            )
             context['mailbox'] = mailbox
         return context
 
@@ -1458,6 +1568,7 @@ class StudentParentView(LoginRequiredMixin, UserPassesTestMixin, BaseView):
             permission = list(self.request.user.get_all_permissions())[0]
         except IndexError:
             raise Http404("User not recognized.")
+
         if permission == 'yourgrades.student':
             student = get_object_or_404(Student, user=self.request.user)
             context['person'] = student
@@ -1465,11 +1576,14 @@ class StudentParentView(LoginRequiredMixin, UserPassesTestMixin, BaseView):
             parent = get_object_or_404(Parent, user=self.request.user)
             student = parent.student
             context['person'] = parent
+
         subjects = Subject.objects.filter(school_class=student.school_class)
         subjects_grades = {}
         for subject in subjects:
-            subjects_grades[subject] = Grades.objects.filter(subject=subject,
-                                                             student=student)
+            subjects_grades[subject] = Grades.objects.filter(
+                subject=subject,
+                student=student
+            )
         context['subjects_grades'] = subjects_grades
 
         return context

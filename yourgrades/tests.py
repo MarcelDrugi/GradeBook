@@ -11,8 +11,11 @@ from .forms import *
 
 class SchoolClassTestCase(TestCase):
     def setUp(self):
-        SchoolClass.objects.create(unique_code='1a2020', name='1a',
-                                   year=2020)
+        SchoolClass.objects.create(
+            unique_code='1a2020',
+            name='1a',
+            year=2020
+        )
 
     def test_school_class(self):
         school_class = SchoolClass.objects.get(unique_code='1a2020')
@@ -26,8 +29,11 @@ class StudentTestCase(TestCase):
     def setUp(self):
         user_data = {'username': 'AdamNowak', 'password': 'adamspass'}
         user = User.objects.create_user(**user_data)
-        school_class_data = {'unique_code': '1b2020', 'name': '1b',
-                             'year': 2020}
+        school_class_data = {
+            'unique_code': '1b2020',
+            'name': '1b',
+            'year': 2020
+        }
         school_class = SchoolClass.objects.create(**school_class_data)
         Student.objects.create(
             user=user,
@@ -41,8 +47,10 @@ class StudentTestCase(TestCase):
         student = Student.objects.get(user__username='AdamNowak')
         self.assertTrue(isinstance(student, Student))
         self.assertEqual(student.first_login, True)
-        self.assertEqual(student.__str__(),
-                         student.name + ' ' + student.surname)
+        self.assertEqual(
+            student.__str__(),
+            student.name + ' ' + student.surname
+        )
         unique_code = student.school_class.unique_code
         school_class = SchoolClass.objects.get(unique_code=unique_code)
         self.assertEqual(student.school_class, school_class)
@@ -52,11 +60,15 @@ class ParentTestCase(TestCase):
     def setUp(self):
         student_user_data = {'username': 'JanNowak', 'password': 'janspass'}
         student_user = User.objects.create_user(**student_user_data)
-        school_class_data = {'unique_code': '1c2020', 'name': '1c',
-                             'year': 2020}
+        school_class_data = {
+            'unique_code': '1c2020',
+            'name': '1c',
+            'year': 2020
+        }
         SchoolClass.objects.create(**school_class_data)
         school_class = SchoolClass.objects.get(
-            unique_code=school_class_data['unique_code'])
+            unique_code=school_class_data['unique_code']
+        )
         Student.objects.create(
             user=student_user,
             school_class=school_class,
@@ -99,8 +111,10 @@ class TeacherTestCase(TestCase):
         self.assertTrue(isinstance(teacher, Teacher))
         self.assertEqual(teacher.first_login, True)
         self.assertEqual(teacher.active, True)
-        self.assertEqual(teacher.__str__(),
-                         teacher.name + ' ' + teacher.surname)
+        self.assertEqual(
+            teacher.__str__(),
+            teacher.name + ' ' + teacher.surname
+        )
 
 
 class SubjectTestCase(TestCase):
@@ -149,7 +163,8 @@ class SubjectTeacherTestCase(TestCase):
 
     def test_subject_teachers(self):
         subject_teachers = SubjectTeachers.objects.get(
-            subject__unique_code='Ch1e2020')
+            subject__unique_code='Ch1e2020'
+        )
         self.assertTrue(isinstance(subject_teachers, SubjectTeachers))
         self.assertEqual(subject_teachers.subject.name, 'Chemistry')
 
@@ -237,12 +252,17 @@ class CanceledGradesTestCase(TestCase):
             unique_code='Gy1d2020',
             school_class=school_class
         )
-        CanceledGrades.objects.create(weight=9, grade=4, student=student,
-                                      subject=subject)
+        CanceledGrades.objects.create(
+            weight=9,
+            grade=4,
+            student=student,
+            subject=subject
+        )
 
     def test_grades(self):
         canceled_grade = CanceledGrades.objects.get(
-            student__user__username='KamilNowak')
+            student__user__username='KamilNowak'
+        )
         self.assertTrue(isinstance(canceled_grade, CanceledGrades))
         now = pytz.utc.localize(datetime.now())
         self.assertTrue(canceled_grade.date <= now)
@@ -339,14 +359,20 @@ class MailboxReceivedTestCase(TestCase):
 
 class MailboxSentTestCase(TestCase):
     def setUp(self):
-        message = Message.objects.create(id=5, subject='Test subject',
-                                         text='Test text.')
+        message = Message.objects.create(
+            id=5,
+            subject='Test subject',
+            text='Test text.'
+        )
         recipient = 'Mr Jan Rak'
         user_sender_data = {'username': 'JanRyba', 'password': 'adamspass'}
         user_sender = User.objects.create_user(**user_sender_data)
         sender = Sender.objects.create(user=user_sender, message=message)
-        MailboxSent.objects.create(sender=sender, recipient=recipient,
-                                       message=message)
+        MailboxSent.objects.create(
+            sender=sender,
+            recipient=recipient,
+            message=message
+        )
 
     def test_mailbox_received(self):
         mailbox_sent = MailboxSent.objects.get(message__id=5)
@@ -433,8 +459,10 @@ def create_manager(password):
                 last_name='Surname'
             )
             content_type = ContentType.objects.get_for_model(RightsSupport)
-            permission = Permission.objects.get(content_type=content_type,
-                                                codename='manager')
+            permission = Permission.objects.get(
+                content_type=content_type,
+                codename='manager'
+            )
             user.user_permissions.add(permission)
             return user
 
@@ -490,60 +518,90 @@ class HomepageViewTestCase(TestCase):
         # Student redirection tests
         # if first_login field is True -> redirects to FirstLoginView
         self.assertTrue(LoginForm(self.student_1_form_data).is_valid())
-        response = Client().post(reverse('yourgrades:homepage'),
-                                 self.student_1_form_data, )
+        response = Client().post(
+            reverse('yourgrades:homepage'),
+            self.student_1_form_data, 
+        )
         self.assertEqual(response.status_code, 302)
-        response = Client().post(reverse('yourgrades:homepage'),
-                                 self.student_1_form_data, follow=True)
+        response = Client().post(
+            reverse('yourgrades:homepage'),
+            self.student_1_form_data,
+            follow=True
+        )
         self.assertRedirects(response, '/yourgrades/firstlogin')
 
         # if first_login field is False, redirects to StudentParentView
         self.assertTrue(LoginForm(self.student_2_form_data).is_valid())
-        response = Client().post(reverse('yourgrades:homepage'),
-                                 self.student_2_form_data, )
+        response = Client().post(
+            reverse('yourgrades:homepage'),
+            self.student_2_form_data,
+        )
         self.assertEqual(response.status_code, 302)
-        response = Client().post(reverse('yourgrades:homepage'),
-                                 self.student_2_form_data, follow=True)
+        response = Client().post(
+            reverse('yourgrades:homepage'),
+            self.student_2_form_data,
+            follow=True
+        )
         self.assertRedirects(response, '/yourgrades/studentparent')
         self.assertTemplateUsed(response, 'yourgrades/studentparent.html')
 
         # Parent redirection tests
         # if first_login field is True, redirects to FirstLoginView
         self.assertTrue(LoginForm(self.parent_1_form_data).is_valid())
-        response = Client().post(reverse('yourgrades:homepage'),
-                                 self.parent_1_form_data, )
+        response = Client().post(
+            reverse('yourgrades:homepage'),
+            self.parent_1_form_data,
+        )
         self.assertEqual(response.status_code, 302)
-        response = Client().post(reverse('yourgrades:homepage'),
-                                 self.parent_1_form_data, follow=True)
+        response = Client().post(
+            reverse('yourgrades:homepage'),
+            self.parent_1_form_data,
+            follow=True
+        )
         self.assertRedirects(response, '/yourgrades/firstlogin')
 
         # if first_login field is False, redirects to StudentParentView
         self.assertTrue(LoginForm(self.parent_2_form_data).is_valid())
-        response = Client().post(reverse('yourgrades:homepage'),
-                                 self.parent_2_form_data, )
+        response = Client().post(
+            reverse('yourgrades:homepage'),
+            self.parent_2_form_data,
+        )
         self.assertEqual(response.status_code, 302)
-        response = Client().post(reverse('yourgrades:homepage'),
-                                 self.parent_2_form_data, follow=True)
+        response = Client().post(
+            reverse('yourgrades:homepage'),
+            self.parent_2_form_data,
+            follow=True
+        )
         self.assertRedirects(response, '/yourgrades/studentparent')
         self.assertTemplateUsed(response, 'yourgrades/studentparent.html')
 
         # Teacher redirection tests
         # if first_login field is True, redirects to FirstLoginView
         self.assertTrue(LoginForm(self.teacher_1_form_data).is_valid())
-        response = Client().post(reverse('yourgrades:homepage'),
-                                 self.teacher_1_form_data, )
+        response = Client().post(
+            reverse('yourgrades:homepage'),
+            self.teacher_1_form_data,
+        )
         self.assertEqual(response.status_code, 302)
-        response = Client().post(reverse('yourgrades:homepage'),
-                                 self.teacher_1_form_data, follow=True)
+        response = Client().post(
+            reverse('yourgrades:homepage'),
+            self.teacher_1_form_data,
+            follow=True
+        )
         self.assertRedirects(response, '/yourgrades/firstlogin')
 
         # if first_login field is False, redirects to TeacherPanelView
         self.assertTrue(LoginForm(self.teacher_2_form_data).is_valid())
-        response = Client().post(reverse('yourgrades:homepage'),
-                                 self.teacher_2_form_data, )
+        response = Client().post(
+            reverse('yourgrades:homepage'),
+            self.teacher_2_form_data,
+        )
         self.assertEqual(response.status_code, 302)
-        response = Client().post(reverse('yourgrades:homepage'),
-                                 self.teacher_2_form_data, follow=True)
+        response = Client().post(
+            reverse('yourgrades:homepage'),
+            self.teacher_2_form_data,
+            follow=True
+        )
         self.assertRedirects(response, '/yourgrades/teacher')
         self.assertTemplateUsed(response, 'yourgrades/teacher.html')
 
