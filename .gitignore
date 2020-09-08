@@ -2,7 +2,8 @@ venv
 */venv
 **/.idea
 */.idea
-gradebook/.env
+*/.env
+**/.env
 gradebook/__pycache__
 yourgrades/__pycache__
 */__pycache__
