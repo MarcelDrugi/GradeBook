@@ -8,7 +8,8 @@ class SchoolClassForm(forms.ModelForm):
         super(SchoolClassForm, self).__init__(*args, **kwargs)
         self.fields['unique_code'].widget = forms.HiddenInput()
         self.fields['name'].widget = forms.TextInput(
-            attrs={'placeholder': 'np. 1a', 'class': 'form-control input-sm'})
+            attrs={'placeholder': 'np. 1a', 'class': 'form-control input-sm'}
+        )
         self.fields['year'].widget = forms.NumberInput(
             attrs={
                 'placeholder': 'np. 1990',
@@ -19,8 +20,7 @@ class SchoolClassForm(forms.ModelForm):
     unique_code = forms.CharField(
         max_length=6,
         validators=[RegexValidator(r'^[1-8]{1}[a-z]{1}[0-9]{4}$')],
-        help_text='Format: nazwa klasy(cyfra zmałą literą) łącznie z rokiem' +
-                  ' zakończenia nauki - np: 1b2019',
+        help_text='Format: class name + year e.g.: 1b2019',
         required=False
     )
 
@@ -77,12 +77,12 @@ class CreateStudentForm(forms.Form):
     first_parent_surname = forms.CharField(
         max_length=64,
         label='Nazwosko rodzica:',
-            widget=forms.TextInput(
-                attrs={
-                    'placeholder':'wprowadź nazwisko',
-                    'class': 'form-control'
-                }
-            )
+        widget=forms.TextInput(
+            attrs={
+                'placeholder': 'wprowadź nazwisko',
+                'class': 'form-control'
+            }
+        )
     )
     second_parent_name = forms.CharField(
         max_length=64,
@@ -173,10 +173,12 @@ class AddGradeForm(forms.ModelForm):
         super(AddGradeForm, self).__init__(*args, **kwargs)
         self.fields['grade'].widget = forms.NumberInput(
             attrs={'placeholder': 'ocena  1 - 6',
-                   'class': 'form-control input-sm'})
+                   'class': 'form-control input-sm'}
+        )
         self.fields['weight'].widget = forms.NumberInput(
             attrs={'placeholder': 'waga  1 - 10',
-                   'class': 'form-control input-sm'})
+                   'class': 'form-control input-sm'}
+        )
 
     class Meta:
         model = Grades
@@ -189,10 +191,12 @@ class MessageForm(forms.ModelForm):
         super(MessageForm, self).__init__(*args, **kwargs)
         self.fields['subject'].widget = forms.TextInput(
             attrs={'placeholder': 'Wpisz tytuł wiadomości',
-                   'class': 'form-control input-sm'})
+                   'class': 'form-control input-sm'}
+        )
         self.fields['text'].widget = forms.Textarea(
             attrs={'placeholder': 'Wpisz tekst wiadomości',
-                   'class': 'form-control input-sm'})
+                   'class': 'form-control input-sm'}
+        )
 
     class Meta:
         model = Message
@@ -257,12 +261,11 @@ class FirstLoginForm(forms.Form):
 class AddSubjectDateForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(AddSubjectDateForm, self).__init__(*args, **kwargs)
-        self.fields['day'].widget.attrs[
-            'class'] = 'form-control input-sm'
-        self.fields['lesson_number'].widget.attrs[
-            'class'] = 'form-control input-sm'
+        self.fields['day'].widget.attrs['class'] = 'form-control input-sm'
+        self.fields['lesson_number'].widget.attrs['class'] = \
+            'form-control input-sm'
 
     class Meta:
         model = SubjectDate
         fields = ['day', 'lesson_number']
-        labels = {'day': 'dzień tygodnia: ', 'lesson_number': 'lekcja: '}
+        labels = {'day': 'dzień tygodnia: ', 'lesson_number': 'lekcja: ', }

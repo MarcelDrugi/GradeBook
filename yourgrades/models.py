@@ -11,22 +11,24 @@ class SchoolClass(models.Model):
         unique=True,
         max_length=6,
         validators=[RegexValidator(r'^[1-8]{1}[a-z]{1}[0-9]{4}$')],
-        help_text='Format: nazwa klasy(cyfra zmałą literą) łącznie z rokiem' +
-                  ' zakończenia nauki - np: 1b2019'
+        help_text='Format: class name + year e.g.: 1b2019'
     )
     name = models.CharField(
         max_length=2,
-        help_text='Cyfra i mała litera bez spacji.'
+        help_text='Digit + lowercase letter e.g.: 1a'
     )
     year = models.IntegerField(
-        validators=[MinValueValidator(1800),
-        MaxValueValidator(9999)],
-        help_text='Rok zakończenia nauki w formacie czterocyfrowym'
+        validators=[MinValueValidator(1800), MaxValueValidator(9999)],
+        help_text='Four-digit graduation year'
     )
     active = models.BooleanField(default=True)
 
     def __str__(self):
         return self.name
+
+    def save(self, *args, **kwargs):
+        self.full_clean()
+        super(SchoolClass, self).save(*args, **kwargs)
 
 
 class PersonalData(models.Model):
@@ -49,14 +51,14 @@ class Student(PersonalData):
     email = models.EmailField(blank=True)
 
     def __str__(self):
-        return self.name + ' ' + self.surname
+        return f'{self.name} {self.surname}'
 
 
 class Parent(PersonalData):
     student = models.ForeignKey(Student, on_delete=models.CASCADE)
 
     def __str__(self):
-        return self.name + ' ' + self.surname
+        return f'{self.name} {self.surname}'
 
 
 class Teacher(PersonalData):
@@ -64,7 +66,7 @@ class Teacher(PersonalData):
     active = models.BooleanField(default=True)
 
     def __str__(self):
-        return self.name + ' ' + self.surname
+        return f'{self.name} {self.surname}'
 
 
 class Subject(models.Model):
@@ -72,9 +74,7 @@ class Subject(models.Model):
     unique_code = models.CharField(
         unique=True,
         max_length=8,
-        help_text='Format: dwuliterowy skrót nazwy przedmiotu z dodanym' +
-                  'unikalnym kodem klasy np: Hi2c2019 (Historia w klasie 2c' +
-                  'w roku szkolnym 2019)'
+        help_text='Format: subject shortcut + class shortcut e.g.: Hi2c2019'
     )
     school_class = models.ForeignKey(SchoolClass, on_delete=models.CASCADE)
 
@@ -120,12 +120,18 @@ class SubjectTeachers(models.Model):
 
 class GradesData(models.Model):
     weight = models.IntegerField(
-        validators=[MaxValueValidator(10), MinValueValidator(1)])
+        validators=[MaxValueValidator(10), MinValueValidator(1)]
+    )
     grade = models.IntegerField(
-        validators=[MaxValueValidator(6), MinValueValidator(1)])
+        validators=[MaxValueValidator(6), MinValueValidator(1)]
+    )
     student = models.ForeignKey(Student, on_delete=models.CASCADE)
     subject = models.ForeignKey(Subject, on_delete=models.CASCADE)
     date = models.DateTimeField(auto_now_add=True)
+
+    def save(self, *args, **kwargs):
+        self.full_clean()
+        super(GradesData, self).save(*args, **kwargs)
 
     class Meta:
         abstract = True
@@ -157,14 +163,14 @@ class Sender(Correspondent):
     message = models.OneToOneField(Message, on_delete=models.CASCADE)
 
     def __str__(self):
-        return self.user.first_name + ' ' + self.user.last_name
+        return f'{self.user.first_name} {self.user.last_name}'
 
 
 class Recipient(Correspondent):
     message = models.ForeignKey(Message, on_delete=models.CASCADE)
 
     def __str__(self):
-        return self.user.first_name + ' ' + self.user.last_name
+        return f'{self.user.first_name} {self.user.last_name}'
 
 
 class Mailbox(models.Model):
