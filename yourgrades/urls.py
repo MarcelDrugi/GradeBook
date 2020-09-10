@@ -38,14 +38,14 @@ urlpatterns = [
     path('/manager/deldate/<str:class_unique_code>/<str:subject_unique_code>'
          '/<int:day>/<int:lesson>', views.DeleteSubjectDateView.as_view(),
          name='delete_date'),
-    path('manager/delsubject/<str:class_unique_code>/'
+    path('/manager/delsubject/<str:class_unique_code>/'
          '<str:subject_unique_code>', views.DeleteSubjectView.as_view(),
          name='del_subject'),
     path('/delsubjectteacher/<str:class_unique_code>/' +
          '<str:subject_unique_code>/<int:teacher_user_id>',
          views.DeleteSubjectTeacherView.as_view(), name='del_subject_teacher'),
     path('/addnewsubjectteacher/<str:class_unique_code>/' +
-         '<str:subject_unique_code>/',
+         '<str:subject_unique_code>',
          views.AddSubjectTeacherView.as_view(), name='add_subject_teacher'),
     path('/manager/teacher/<str:teacher_user_id>',
          views.ManagerTeacherView.as_view(), name='manager_teacher'),
